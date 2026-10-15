@@ -1,0 +1,1222 @@
+:root {
+    /* Medidas de la maqueta en px de diseño, sobre una hoja de 1 px = 1 em.
+       El papel es 54 × 86 mm, o sea 54/86 = 0.628 de proporción. Con el ancho
+       de Canva (1024) el alto tiene que ser 1024 × 86/54 = 1631: a 54 mm de
+       ancho eso da exactamente 86 mm de alto y la credencial llena la tarjeta.
+       Con el alto original de Canva (1536) la credencial salia de 54 × 81 mm y
+       quedaban 2.5 mm de blanco arriba y abajo. */
+    --design-w: 1024;
+    --design-h: 1631;
+
+    /* Las letras superiores suben, el QR y el cuerpo también suben. */
+    --drop-header: 15;
+    --drop-qr: 90;
+    --drop-verify: 90;
+    /* La foto y los campos. Baja 25 en lugar de 55. */
+    --drop-body: 25;
+    /* Ciudad y slogan van 8 px detras de los campos. El slogan se monta 40 px
+       sobre el cerro, un poco mas que los 34 px de la maqueta original: es lo
+       que queda al bajar el cerro lo maximo posible sin pisar el pie.
+       La ciudad sube 25 em sobre el slogan (62 frente a 87): sin ese extra la
+       cola de la "g" de "Llallagua" (Yellowtail baja ~124 em del top) pisa la
+       palabra "tierra". */
+    --drop-city: 62;
+    --drop-slogan: 87;
+    /* El Cerro baja mas hasta casi rozar al pie. */
+    --drop-cerro: 98;
+    /* Separacion entre el rotulo ("Nombres y apellidos:") y su cuadro. */
+    --field-gap: 5;
+    --green: #005029;
+    --green-light: #147b14;
+    --gold: #c9a227;
+}
+
+@font-face {
+    font-family: "Yellowtail";
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url("fonts/yellowtail.woff2") format("woff2");
+}
+
+@font-face {
+    font-family: "Glacial Indifference";
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url("fonts/glacial-regular.woff2") format("woff2");
+}
+
+@font-face {
+    font-family: "Glacial Indifference";
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+    src: url("fonts/glacial-bold.woff2") format("woff2");
+}
+
+/* =====================================================================
+   Generador de credenciales — G.A.M. Llallagua
+   Selectores scoped bajo #cred-app para no chocar con el tema del panel.
+   ===================================================================== */
+#cred-app {
+    --bg: #f0f2f0;
+    --surface: #ffffff;
+    --surface-muted: #f8faf8;
+    --border: #d8e0d8;
+    --text: #1a1a1a;
+    --text-muted: #5c6b5c;
+    --accent: #005029;
+    --accent-light: #147b14;
+    --accent-soft: #e8f0ea;
+    --danger: #b91c1c;
+    --danger-soft: #fbeaea;
+    --radius: 12px;
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.06), 0 8px 24px rgba(0, 0, 0, 0.06);
+    --font: Arial, Helvetica, sans-serif;
+    box-sizing: border-box;
+}
+
+#cred-app *,
+#cred-app *::before,
+#cred-app *::after {
+    box-sizing: border-box;
+}
+
+#cred-app {
+    max-width: 1200px;
+    margin: 0 auto;
+    font-family: var(--font);
+    color: var(--text);
+    line-height: 1.5;
+}
+
+/* Layout */
+#cred-app .layout {
+    display: grid;
+    grid-template-columns: minmax(280px, 380px) 1fr;
+    gap: 1.5rem;
+    align-items: start;
+}
+
+@media (max-width: 900px) {
+    #cred-app .layout {
+        grid-template-columns: 1fr;
+    }
+}
+
+#cred-app .panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    box-shadow: var(--shadow);
+}
+
+#cred-app .panel h2 {
+    margin: 0 0 1.25rem;
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+
+/* Form */
+#cred-app .field {
+    margin-bottom: 1.1rem;
+}
+
+#cred-app .field label {
+    display: block;
+    margin-bottom: 0.4rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+#cred-app .field input[type="text"],
+#cred-app .field select {
+    width: 100%;
+    padding: 0.65rem 0.85rem;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font: inherit;
+    background: var(--surface-muted);
+    transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+#cred-app .field input[type="text"]:focus,
+#cred-app .field select:focus {
+    outline: none;
+    border-color: var(--accent-light);
+    box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+#cred-app .field input[type="text"][readonly] {
+    background: var(--surface-muted);
+    color: var(--text);
+    cursor: not-allowed;
+}
+
+#cred-app .field-hint {
+    margin: 0.4rem 0 0;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+/* Controles del encuadre de la foto (zoom y desplazamiento) */
+#cred-app .foto-ajuste[hidden] {
+    display: none;
+}
+
+#cred-app .foto-ajuste__fila {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+#cred-app .foto-ajuste__fila + .foto-ajuste__fila {
+    margin-top: 0.6rem;
+}
+
+#cred-app #foto-zoom {
+    flex: 1 1 160px;
+    min-width: 120px;
+    accent-color: var(--green);
+    cursor: pointer;
+}
+
+#cred-app #foto-zoom-salida {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    font-variant-numeric: tabular-nums;
+    min-width: 4ch;
+    text-align: right;
+}
+
+#cred-app .foto-ajuste__estado {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin: 0.5rem 0 0;
+    min-height: 1em;
+}
+
+#cred-app .foto-ajuste__estado[data-estado="error"] {
+    color: var(--danger, #b3261e);
+}
+
+#cred-app .photo-choice {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+#cred-app .photo-choice__thumb {
+    width: 72px;
+    height: 88px;
+    flex-shrink: 0;
+    border-radius: 8px;
+    overflow: hidden;
+    background: var(--surface-muted);
+    border: 1px solid var(--border);
+    display: grid;
+    place-items: center;
+    color: #9ab09a;
+}
+
+#cred-app .photo-choice__thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+#cred-app .photo-choice__thumb img[hidden] {
+    display: none;
+}
+
+#cred-app .photo-choice__actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: flex-start;
+}
+
+#cred-app .photo-choice__actions .field-hint {
+    margin: 0;
+}
+
+@media (max-width: 520px) {
+    #cred-app .photo-choice {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+
+/* Selector de empleado con búsqueda */
+#cred-app .employee-picker {
+    position: relative;
+}
+
+#cred-app .employee-results {
+    position: absolute;
+    z-index: 30;
+    top: 100%;
+    left: 0;
+    right: 0;
+    margin-top: 4px;
+    max-height: 260px;
+    overflow-y: auto;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    box-shadow: var(--shadow);
+}
+
+#cred-app .employee-results[hidden] {
+    display: none;
+}
+
+#cred-app .employee-option {
+    display: block;
+    width: 100%;
+    padding: 0.55rem 0.85rem;
+    border: none;
+    border-bottom: 1px solid var(--surface-muted);
+    background: transparent;
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+}
+
+#cred-app .employee-option:last-child {
+    border-bottom: none;
+}
+
+#cred-app .employee-option:hover,
+#cred-app .employee-option.is-active {
+    background: var(--accent-soft);
+}
+
+#cred-app .employee-option__name {
+    display: block;
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--text);
+}
+
+#cred-app .employee-option__cargo {
+    display: block;
+    font-size: 0.78rem;
+    color: var(--text-muted);
+}
+
+#cred-app .employee-empty {
+    margin: 0;
+    padding: 0.75rem 0.85rem;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+}
+
+#cred-app .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.65rem;
+    margin-top: 1.5rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--border);
+}
+
+#cred-app .generated-hint {
+    margin: 1.2rem 0 -0.6rem;
+    padding: 0.6rem 0.85rem;
+    background: var(--accent-soft);
+    border: 1px solid #bfd6c5;
+    border-radius: 8px;
+    color: var(--accent);
+    font-size: 0.82rem;
+    display: none;
+}
+
+#cred-app .generated-hint code {
+    font-family: Consolas, "Courier New", monospace;
+    word-break: break-all;
+}
+
+#cred-app .alert-msg {
+    margin: 0 0 1rem;
+    padding: 0.6rem 0.85rem;
+    background: var(--danger-soft);
+    border: 1px solid #f0c4c4;
+    border-radius: 8px;
+    color: var(--danger);
+    font-size: 0.85rem;
+    display: none;
+}
+
+/* Aviso: informa de que el archivo no se subio, pero no es un fallo del
+   sistema. Tono neutro en vez del rojo de .alert-msg para que se lea como
+   nota y no como fallo. */
+#cred-app .alert-msg--aviso {
+    background: #fdf6e3;
+    border-color: #e6d9a8;
+    color: #6b5518;
+}
+
+#cred-app .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.65rem 1.1rem;
+    border: none;
+    border-radius: 8px;
+    font: inherit;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background 0.15s, transform 0.1s;
+    text-transform: none;
+    margin: 0;
+}
+
+#cred-app .btn svg {
+    width: 18px;
+    height: 18px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+}
+
+#cred-app .btn:active {
+    transform: scale(0.98);
+}
+
+#cred-app .btn--primary {
+    background: var(--accent);
+    color: #fff;
+}
+
+#cred-app .btn--primary:hover {
+    background: var(--accent-light);
+    color: #fff;
+}
+
+#cred-app .btn--ghost {
+    background: transparent;
+    color: var(--text-muted);
+    border: 1px solid var(--border);
+}
+
+#cred-app .btn--ghost:hover {
+    background: var(--surface-muted);
+    color: var(--text);
+}
+
+#cred-app .btn--danger {
+    background: transparent;
+    color: var(--danger);
+    border: 1px solid rgba(185, 28, 28, 0.4);
+}
+
+#cred-app .btn--danger:hover {
+    background: var(--danger-soft);
+    color: var(--danger);
+}
+
+#cred-app .btn--sm {
+    padding: 0.4rem 0.75rem;
+    font-size: 0.8rem;
+    align-self: flex-start;
+}
+
+#cred-app .btn[disabled] {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
+/* Preview panel */
+#cred-app .preview-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+}
+
+#cred-app .preview-header h2 {
+    margin: 0;
+}
+
+#cred-app .badge {
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 0.25rem 0.6rem;
+    background: var(--accent-soft);
+    color: var(--accent);
+    border-radius: 999px;
+    white-space: nowrap;
+}
+
+#cred-app .preview-stage {
+    display: flex;
+    justify-content: center;
+    padding: 1.5rem 1rem;
+    background: linear-gradient(145deg, #e8ece8 0%, #f5f7f5 100%);
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    overflow: auto;
+}
+
+#cred-app .preview-scale {
+    display: inline-flex;
+}
+
+#cred-app .preview-hint {
+    margin: 1rem 0 0;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    text-align: center;
+}
+
+@media (min-width: 901px) {
+    #cred-app .preview-stage {
+        min-height: 460px;
+    }
+}
+
+/* Credencial — basada en Canva DAHVfvNLDe8 */
+.cred-sheet {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+}
+
+.cred-page {
+    position: relative;
+    width: calc(var(--design-w) * 1em);
+    height: calc(var(--design-h) * 1em);
+    background: #fff;
+    overflow: hidden;
+    flex-shrink: 0;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+    border-radius: 42em;
+    /* 1em = 1px del diseño Canva; la vista previa escala por transform */
+    font-size: 1px;
+}
+
+.cred-page,
+.cred-page *,
+.cred-page *::before,
+.cred-page *::after {
+    box-sizing: border-box;
+}
+
+.cred-page__bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 0;
+    pointer-events: none;
+}
+
+.cred-page__bg[hidden] {
+    display: none;
+}
+
+/* Reverso: cuando el PNG está presente, el texto legal queda oculto */
+.cred-page:has(.cred-page__bg:not([hidden])) .cred-legal {
+    opacity: 0;
+}
+
+/* Fondo del anverso */
+.cred-page--front {
+    background: #ffffff;
+}
+
+/* Cuando el nombre y el cargo ocupan dos filas, el bloque de campos crece y
+   deja casi pegado el QR y la ciudad/slogan. credencial.js marca el anverso
+   con esta clase en ese caso y aqui se bajan un poco: el QR y la verificacion
+   ~12 em (el borde inferior del pie empieza en 1468, no hay mas sitio) y la
+   ciudad/slogan ~30 em, que bajan hasta casi la altura del QR. */
+.cred-page--doble {
+    --drop-qr: 102;
+    --drop-verify: 102;
+    /* La ciudad sube 25 em sobre el slogan (92 frente a 117), igual que en la
+       base: separa "Llallagua" de "tierra de unidad y paz" sin pisar el cuadro
+       de "Cargo", que en doble fila acaba mas abajo. */
+    --drop-city: 92;
+    --drop-slogan: 117;
+}
+
+/* Imagen decorativa en la esquina superior derecha */
+.cred-cerro--top {
+    position: absolute;
+    z-index: 2;
+    right: 0;
+    top: 0;
+    width: calc(380 / var(--design-w) * 100%);
+    height: calc(215 / var(--design-h) * 100%);
+    object-fit: contain;
+    object-position: top right;
+    pointer-events: none;
+}
+
+/* Imagen decorativa al pie de la credencial */
+.cred-cerro-border {
+    position: absolute;
+    z-index: 1;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 214em;
+    object-fit: cover;
+    object-position: bottom left;
+    pointer-events: none;
+}
+
+/* ================= Anverso ================= */
+
+/* Encabezado: logo a la izquierda y título a la derecha */
+.cred-header {
+    position: absolute;
+    top: calc(24 / var(--design-h) * 100% + var(--drop-header) * 1px);
+    left: calc(80 / var(--design-w) * 100%);
+    right: calc(80 / var(--design-w) * 100%);
+    display: flex;
+    flex-direction: column;
+    gap: calc(2 / var(--design-h) * 100%);
+}
+
+.cred-header__top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: calc(24 / var(--design-w) * 100%);
+}
+
+.cred-header__logo {
+    width: calc(178 / var(--design-w) * 100%);
+    height: calc(196 / var(--design-h) * 100%);
+    flex: none;
+    object-fit: contain;
+    margin-top: -20em;
+}
+
+.cred-header__title {
+    flex: 1;
+    min-width: 0;
+    margin: 0;
+    margin-left: calc(10 / var(--design-w) * 100%);
+    font-family: "Glacial Indifference", Arial, sans-serif;
+    font-size: 46em;
+    font-weight: 700;
+    text-transform: uppercase;
+    text-align: left;
+    line-height: 1.15;
+    letter-spacing: 0.06em;
+    color: var(--green);
+}
+
+.cred-header__title > span {
+    display: block;
+}
+
+.cred-header__title .cred-header__title--light {
+    font-weight: 400;
+}
+
+.cred-header__rule {
+    display: flex;
+    align-items: center;
+    gap: calc(64 / var(--design-w) * 100%);
+    width: 840em;
+    margin: -15em 0 0 0;
+}
+
+.cred-header__rule i,
+.cred-footer i {
+    flex: 1;
+    height: 2em;
+    background: var(--green);
+}
+
+.cred-header__rule span,
+.cred-footer span {
+    font-family: "Glacial Indifference", Arial, sans-serif;
+    font-size: 38em;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    color: var(--green);
+    white-space: nowrap;
+}
+
+.cred-header__rule span {
+    font-size: 46em;
+    letter-spacing: 0.5em;
+    padding-left: 0;
+    margin-right: -0.5em;
+}
+
+.cred-header__rule i:first-child,
+.cred-footer i:first-child {
+    flex: 1 1 0%;
+}
+
+.cred-header__rule i:last-child,
+.cred-footer i:last-child {
+    flex: 1 1 0%;
+}
+
+.cred-header__rule i:nth-child(1),
+.cred-header__rule i:nth-child(2),
+.cred-header__rule i:nth-child(4),
+.cred-header__rule i:nth-child(5) {
+    flex: 1 1 0%;
+}
+
+/* Cuerpo: columna centrada con la foto arriba y los campos debajo */
+.cred-body {
+    position: absolute;
+    top: calc(285 / var(--design-h) * 100% + var(--drop-body) * 1px);
+    left: 50%;
+    transform: translateX(-50%);
+    width: calc(880 / var(--design-w) * 100%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: calc(16 / var(--design-h) * 100%);
+}
+
+.cred-photo {
+    position: relative;
+    align-self: center;
+    width: 590em;
+    height: 530em;
+    /* La foto crece hacia arriba, no hacia abajo: el borde inferior baja solo
+       10 px y el bloque de campos baja lo mismo. El resto del crecimiento sale
+       del hueco que hay entre el encabezado y el cuerpo. */
+    margin-top: -35em;
+    border: 5em solid var(--green);
+    border-radius: 12em;
+    overflow: hidden;
+    background: #fff;
+}
+
+/* La foto se puede arrastrar y acercar con el mouse. El clon que se manda a la
+   ventana de impresion sale de este mismo elemento, asi que hereda la clase
+   editable: por eso las reglas van con body:not(.solo-credencial), que es la
+   marca de la ventana de impresion. En el papel sale como credencial, sin
+   cursor de arrastre. */
+body:not(.solo-credencial) .cred-photo--editable {
+    cursor: grab;
+    touch-action: none;
+}
+
+body:not(.solo-credencial) .cred-photo--editable:active {
+    cursor: grabbing;
+}
+
+.cred-photo__img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    /* El desplazamiento va en em porque .cred-page usa font-size: 1px: asi
+       1em es una unidad de diseno (1024 x 1631) y el mismo valor sirve en
+       pantalla y en el papel, que se escala aparte con transform. */
+    transform: translate(0, 0) scale(1);
+    transform-origin: center center;
+}
+
+/* will-change solo mientras se edita: en la copia impresa no hace falta y
+   puede empujar al motor a rasterizar la imagen. */
+body:not(.solo-credencial) .cred-photo__img {
+    will-change: transform;
+}
+
+.cred-photo__img[hidden] {
+    display: none;
+}
+
+.cred-photo__placeholder {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    color: #9ab09a;
+}
+
+.cred-photo__placeholder svg {
+    width: calc(110 / var(--design-w) * 100%);
+    height: auto;
+}
+
+.cred-photo__placeholder[hidden] {
+    display: none;
+}
+
+/* Ajustes que existen SOLO en la salida impresa. .impresion-medida se la pone
+   credencial.js al clon de la credencial que se manda a la ventana de impresion
+   (imprimirCredencial). Ningun clon se queda con la clase, asi que la vista
+   previa nunca la lleva y el montage en pantalla no cambia. Al colgar de la
+   clase y no de body.solo-credencial, el papel lee los mismos valores del CSS
+   que la pantalla. */
+
+/* La foto impresa sigue siendo un poco mas grande que la de la vista previa
+   (-70 de margen y 550 de alto frente a -50 y 530), pero acaba en el mismo
+   sitio: 790 de fondo en las dos, asi el bloque de campos empieza a la misma
+   altura en las tres salidas. */
+.impresion-medida .cred-photo {
+    margin-top: -55em;
+    width: 612em;
+    height: 550em;
+}
+
+/* El GAMLL del pie se pone mas grueso, igual que el del encabezado. */
+.impresion-medida .cred-footer span {
+    font-weight: 700;
+}
+
+/* Los campos bajan un poco en las tres salidas: 40 em debajo de la foto, que
+   en las tres acaba en 760, deja el bloque empezando en 800 como antes. */
+.cred-fields {
+    align-self: stretch;
+    display: flex;
+    flex-direction: column;
+    gap: calc(15 / var(--design-h) * 100%);
+    margin-top: 25em;
+}
+
+.cred-field {
+    display: flex;
+    flex-direction: column;
+    /* Separacion entre el rotulo y su cuadro. Antes era un porcentaje de
+       (8 / design-h) del alto del propio campo, que ademas dependia de la
+       anchura del texto; en px de diseno la separacion es siempre la misma.
+       .cred-field no tiene font-size propio, asi que aqui 1em tambien seria el
+       px de diseno, pero se deja en px por no depender de eso. */
+    gap: calc(var(--field-gap) * 1px);
+}
+
+.cred-field__label {
+    font-family: "Glacial Indifference", Arial, sans-serif;
+    font-size: 34em;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--green);
+}
+
+.cred-field__box {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: calc(18 / var(--design-w) * 100%);
+    /* El cuadro ya no lleva 110 em de alto ni 14 em de relleno vertical: con la
+       letra de una sola linea (una 31 em de tinta) sobraba casi 40 em arriba y
+       abajo. Ahora el alto sale del texto mas 10 em de relleno (una linea 72,
+       dos lineas 121), asi la diferencia con la letra no es tanta. */
+    min-height: 72em;
+    padding: 10em 24em;
+    border: 2em solid var(--green);
+    border-radius: 12em;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 2em 0 rgba(0, 80, 41, 0.05);
+}
+
+.cred-field__value {
+    flex: 1;
+    min-width: 0;
+    font-size: 44em;
+    font-weight: 700;
+    text-transform: uppercase;
+    line-height: 1.15;
+    color: #000;
+    word-break: break-word;
+}
+
+/* Cerro grande */
+.cred-cerro {
+    position: absolute;
+    z-index: 0;
+    left: -30em;
+    top: calc(1248 / var(--design-h) * 100% + var(--drop-cerro) * 1px);
+    width: calc(730 / var(--design-w) * 100%);
+    height: calc(250 / var(--design-h) * 100%);
+    object-fit: contain;
+    object-position: left bottom;
+    pointer-events: none;
+}
+
+.cred-city {
+    position: absolute;
+    z-index: 2;
+    left: calc(100 / var(--design-w) * 100%);
+    top: calc(1108 / var(--design-h) * 100% + var(--drop-city) * 1px);
+    margin: 0;
+    font-family: "Yellowtail", cursive;
+    font-size: 110em;
+    line-height: 1;
+    color: var(--green);
+    white-space: nowrap;
+}
+
+.cred-slogan-wrap {
+    position: absolute;
+    z-index: 2;
+    left: calc(100 / var(--design-w) * 100%);
+    top: calc(1220 / var(--design-h) * 100% + var(--drop-slogan) * 1px);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: calc(8 / var(--design-h) * 100%);
+    width: max-content;
+}
+
+.cred-slogan {
+    margin: 0;
+    font-family: "Glacial Indifference", Arial, sans-serif;
+    font-size: 40em;
+    font-style: italic;
+    color: var(--green);
+    white-space: nowrap;
+}
+
+.cred-slogan-line {
+    display: block;
+    width: 100%;
+    height: 2em;
+    background: var(--green);
+}
+
+/* QR + verificación */
+.cred-qr {
+    position: absolute;
+    z-index: 2;
+    left: calc(700 / var(--design-w) * 100%);
+    top: calc(1120 / var(--design-h) * 100% + var(--drop-qr) * 1px);
+    width: calc(220 / var(--design-w) * 100%);
+    height: calc(220 / var(--design-h) * 100%);
+    padding: 5em;
+    border: 5em solid var(--green);
+    border-radius: 10em;
+    background: #fff;
+}
+
+.cred-qr img {
+    width: 100%;
+    height: 100%;
+    object-fit: fill;
+    display: block;
+}
+
+.cred-verify {
+    position: absolute;
+    z-index: 2;
+    left: calc(665 / var(--design-w) * 100%);
+    top: calc(1340 / var(--design-h) * 100% + var(--drop-verify) * 1px);
+    width: calc(290 / var(--design-w) * 100%);
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.cred-verify__text {
+    font-size: 20em;
+    font-weight: 500;
+    text-align: center;
+    text-transform: none;
+    line-height: 1.2;
+    color: var(--green);
+}
+
+.cred-footer {
+    position: absolute;
+    z-index: 2;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    bottom: calc(16 / var(--design-h) * 100%);
+    display: flex;
+    align-items: center;
+    gap: calc(64 / var(--design-w) * 100%);
+    width: 840em;
+    background: transparent;
+}
+
+.cred-footer i:first-child {
+    flex: 1 1 0%;
+}
+
+.cred-footer i:last-child {
+    flex: 1 1 0%;
+}
+
+.cred-footer i {
+    background: #ffffff;
+    height: 2em;
+}
+
+.cred-footer span {
+    font-size: 46em;
+    font-weight: 400;
+    letter-spacing: 0.5em;
+    color: #ffffff;
+    padding-left: 0;
+    margin-right: -0.5em;
+}
+
+/* Reverso */
+.cred-page--back {
+    background: #fff;
+}
+
+.cred-legal {
+    position: absolute;
+    z-index: 2;
+    top: calc(106 / var(--design-h) * 100%);
+    left: calc(170 / var(--design-w) * 100%);
+    width: calc(653 / var(--design-w) * 100%);
+    margin: 0;
+    font-size: 48em;
+    font-weight: 700;
+    line-height: 1.35;
+    text-align: justify;
+    color: #000;
+}
+
+.cred-legal strong {
+    color: var(--green);
+}
+
+@media (max-width: 900px) {
+    .cred-sheet {
+        flex-direction: column;
+        align-items: center;
+    }
+}
+
+/* Registros guardados */
+#cred-app .search-panel {
+    margin-top: 1.5rem;
+}
+
+#cred-app .search-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+    flex-wrap: wrap;
+}
+
+#cred-app .search-header h2 {
+    margin: 0;
+}
+
+#cred-app .search-count {
+    margin: 0.2rem 0 0;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+#cred-app .search-header input[type="search"] {
+    width: 100%;
+    max-width: 340px;
+    padding: 0.65rem 0.85rem;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font: inherit;
+    background: var(--surface-muted);
+}
+
+#cred-app .search-header input[type="search"]:focus {
+    outline: none;
+    border-color: var(--accent-light);
+    box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+#cred-app .search-results {
+    display: grid;
+    gap: 0.75rem;
+}
+
+#cred-app .search-empty {
+    margin: 0;
+    padding: 1.25rem;
+    border: 1px dashed var(--border);
+    border-radius: 8px;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    text-align: center;
+}
+
+#cred-app .record {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.85rem 1rem;
+    background: var(--surface-muted);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    margin: 0;
+}
+
+#cred-app .record__thumb {
+    width: 52px;
+    height: 64px;
+    border-radius: 6px;
+    overflow: hidden;
+    background: #dfe7df;
+    flex-shrink: 0;
+    display: grid;
+    place-items: center;
+    color: #9ab09a;
+}
+
+#cred-app .record__thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+#cred-app .record__thumb svg {
+    width: 22px;
+    height: 22px;
+}
+
+#cred-app .record__info {
+    flex: 1;
+    min-width: 0;
+}
+
+#cred-app .record__name {
+    margin: 0;
+    font-weight: 700;
+    font-size: 0.93rem;
+    text-transform: uppercase;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#cred-app .record__cargo {
+    margin: 0.1rem 0 0;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#cred-app .record__meta {
+    margin: 0.2rem 0 0;
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    font-family: Consolas, "Courier New", monospace;
+}
+
+#cred-app .record__actions {
+    display: flex;
+    gap: 0.4rem;
+    flex-shrink: 0;
+}
+
+@media (max-width: 720px) {
+    #cred-app .record {
+        flex-wrap: wrap;
+    }
+
+    #cred-app .record__actions {
+        width: 100%;
+        justify-content: flex-end;
+    }
+}
+
+/* Zona de impresión */
+.print-zone {
+    display: none;
+}
+
+@page {
+    size: 54mm 86mm !important;
+    margin: 0 !important;
+}
+
+@media print {
+    /* Este reset es del flujo antiguo (imprimir el panel entero). No puede
+     alcanzar a la credencial: su diseno depende de margenes, rellenos y bordes,
+     y con el reset la impresion sale sin lineas, sin cajas y con otra
+     maquetacion. La ventana de impresion marca <body class="solo-credencial">. */
+    body:not(.solo-credencial) * {
+        margin: 0 !important;
+        padding: 0 !important;
+        border: none !important;
+        box-shadow: none !important;
+        background-color: transparent !important;
+    }
+
+    html,
+    body {
+        width: 54mm;
+        height: auto;
+        min-height: 0 !important;
+        background: #fff !important;
+    }
+
+    .left_col,
+    .top_nav,
+    .navbar,
+    footer:not(.cred-footer),
+    #cred-app .preview-panel,
+    #cred-app .form-panel,
+    #cred-app .search-panel,
+    .search-panel,
+    .form-panel {
+        display: none !important;
+    }
+
+    #cred-app {
+        display: block !important;
+    }
+
+    #cred-app .form-panel,
+    #cred-app .search-panel,
+    #cred-app .cred-sheet {
+        display: none !important;
+    }
+
+    .main_container .right_col {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+    }
+
+    .print-zone {
+        display: block !important;
+    }
+
+    .print-zone .cred-page--print {
+        display: none !important;
+    }
+
+    .print-zone img {
+        display: block;
+        width: 54mm;
+        height: 86mm;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    #print-img-front {
+        page-break-after: always;
+        break-after: page;
+    }
+}
