@@ -7,6 +7,7 @@ $employeesJson = $employees->map(function ($e) {
         'id' => $e->id,
         'nombre' => trim($e->full_name),
         'cargo' => optional($e->charges)->charge_employee,
+        'ci' => $e->ci,
         'foto' => asset($e->rutaFoto()),
         'ajuste' => $e->ajusteFoto(),
     ];
@@ -124,10 +125,16 @@ $employeesJson = $employees->map(function ($e) {
                         <span class="cred-field__value" id="preview-nombre">—</span>
                       </div>
                     </div>
-                    <div class="cred-field">
+                    <div class="cred-field cred-field--cargo">
                       <span class="cred-field__label">Cargo:</span>
                       <div class="cred-field__box">
                         <span class="cred-field__value" id="preview-cargo">—</span>
+                      </div>
+                    </div>
+                    <div class="cred-field cred-field--ci">
+                      <span class="cred-field__label">C.I.:</span>
+                      <div class="cred-field__box">
+                        <span class="cred-field__value" id="preview-ci">—</span>
                       </div>
                     </div>
                   </div>
@@ -207,10 +214,16 @@ $employeesJson = $employees->map(function ($e) {
           <span class="cred-field__value" id="print-nombre"></span>
             </div>
           </div>
-          <div class="cred-field">
+          <div class="cred-field cred-field--cargo">
             <span class="cred-field__label">Cargo:</span>
-<div class="cred-field__box">
-          <span class="cred-field__value" id="print-cargo"></span>
+            <div class="cred-field__box">
+              <span class="cred-field__value" id="print-cargo"></span>
+            </div>
+          </div>
+          <div class="cred-field cred-field--ci">
+            <span class="cred-field__label">C.I.:</span>
+            <div class="cred-field__box">
+              <span class="cred-field__value" id="print-ci"></span>
             </div>
           </div>
         </div>

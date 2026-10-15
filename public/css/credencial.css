@@ -12,16 +12,17 @@
     --drop-header: 15;
     --drop-qr: 90;
     --drop-verify: 90;
-    /* La foto y los campos. Baja 25 en lugar de 55. */
-    --drop-body: 25;
+    /* La foto y los campos. Baja 25 en lugar de 55. Sube a 14 para acercar el
+       bloque (foto + nombres/apellidos + cargo) al encabezado. */
+    --drop-body: 14;
     /* Ciudad y slogan van 8 px detras de los campos. El slogan se monta 40 px
        sobre el cerro, un poco mas que los 34 px de la maqueta original: es lo
        que queda al bajar el cerro lo maximo posible sin pisar el pie.
-       La ciudad sube 25 em sobre el slogan (62 frente a 87): sin ese extra la
+       La ciudad sube 25 em sobre el slogan (87 frente a 112): sin ese extra la
        cola de la "g" de "Llallagua" (Yellowtail baja ~124 em del top) pisa la
        palabra "tierra". */
-    --drop-city: 62;
-    --drop-slogan: 87;
+    --drop-city: 87;
+    --drop-slogan: 112;
     /* El Cerro baja mas hasta casi rozar al pie. */
     --drop-cerro: 98;
     /* Separacion entre el rotulo ("Nombres y apellidos:") y su cuadro. */
@@ -541,11 +542,11 @@
 .cred-page--doble {
     --drop-qr: 102;
     --drop-verify: 102;
-    /* La ciudad sube 25 em sobre el slogan (92 frente a 117), igual que en la
+    /* La ciudad sube 25 em sobre el slogan (117 frente a 142), igual que en la
        base: separa "Llallagua" de "tierra de unidad y paz" sin pisar el cuadro
        de "Cargo", que en doble fila acaba mas abajo. */
-    --drop-city: 92;
-    --drop-slogan: 117;
+    --drop-city: 117;
+    --drop-slogan: 142;
 }
 
 /* Imagen decorativa en la esquina superior derecha */
@@ -693,10 +694,7 @@
     align-self: center;
     width: 590em;
     height: 530em;
-    /* La foto crece hacia arriba, no hacia abajo: el borde inferior baja solo
-       10 px y el bloque de campos baja lo mismo. El resto del crecimiento sale
-       del hueco que hay entre el encabezado y el cuerpo. */
-    margin-top: -35em;
+    margin-top: -45em;
     border: 5em solid var(--green);
     border-radius: 12em;
     overflow: hidden;
@@ -770,12 +768,16 @@ body:not(.solo-credencial) .cred-photo__img {
    sitio: 790 de fondo en las dos, asi el bloque de campos empieza a la misma
    altura en las tres salidas. */
 .impresion-medida .cred-photo {
-    margin-top: -55em;
+    margin-top: -75em;
     width: 612em;
     height: 550em;
 }
 
 /* El GAMLL del pie se pone mas grueso, igual que el del encabezado. */
+.impresion-medida .cred-footer {
+    bottom: calc(10 / var(--design-h) * 100%);
+}
+
 .impresion-medida .cred-footer span {
     font-weight: 700;
 }
@@ -787,7 +789,7 @@ body:not(.solo-credencial) .cred-photo__img {
     display: flex;
     flex-direction: column;
     gap: calc(15 / var(--design-h) * 100%);
-    margin-top: 25em;
+    margin-top: 14em;
 }
 
 .cred-field {
@@ -839,12 +841,50 @@ body:not(.solo-credencial) .cred-photo__img {
     word-break: break-word;
 }
 
+/* Cargo ocupa todo el ancho para que los cargos largos no se corten ni pasen
+   a dos lineas. El C.I. queda debajo del cargo, pero con su cuadro alineado a
+   la derecha y un ancho parcial, para que no parezca una simple extension del
+   cuadro de cargo. */
+.cred-field--cargo {
+    width: 100%;
+    min-width: 0;
+}
+
+.cred-field--ci {
+    align-self: flex-start;
+    width: 100%;
+    min-width: 0;
+    flex-direction: row;
+    align-items: center;
+    gap: calc(12 / var(--design-w) * 100%);
+}
+
+.cred-field--ci .cred-field__label {
+    flex-shrink: 0;
+}
+
+.cred-field--ci .cred-field__box {
+    flex: 1 1 auto;
+}
+
+.cred-field--ci .cred-field__label {
+    flex-shrink: 0;
+}
+
+.cred-field--ci .cred-field__label {
+    flex-shrink: 0;
+}
+
+.cred-field--ci .cred-field__box {
+    flex: 1 1 auto;
+}
+
 /* Cerro grande */
 .cred-cerro {
     position: absolute;
     z-index: 0;
     left: -30em;
-    top: calc(1248 / var(--design-h) * 100% + var(--drop-cerro) * 1px);
+    top: calc(1240 / var(--design-h) * 100% + var(--drop-cerro) * 1px);
     width: calc(730 / var(--design-w) * 100%);
     height: calc(250 / var(--design-h) * 100%);
     object-fit: contain;
@@ -856,7 +896,7 @@ body:not(.solo-credencial) .cred-photo__img {
     position: absolute;
     z-index: 2;
     left: calc(100 / var(--design-w) * 100%);
-    top: calc(1108 / var(--design-h) * 100% + var(--drop-city) * 1px);
+    top: calc(1102 / var(--design-h) * 100% + var(--drop-city) * 1px);
     margin: 0;
     font-family: "Yellowtail", cursive;
     font-size: 110em;
@@ -869,7 +909,7 @@ body:not(.solo-credencial) .cred-photo__img {
     position: absolute;
     z-index: 2;
     left: calc(100 / var(--design-w) * 100%);
-    top: calc(1220 / var(--design-h) * 100% + var(--drop-slogan) * 1px);
+    top: calc(1212 / var(--design-h) * 100% + var(--drop-slogan) * 1px);
     display: flex;
     flex-direction: column;
     align-items: flex-start;
