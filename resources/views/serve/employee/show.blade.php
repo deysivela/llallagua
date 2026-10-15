@@ -29,6 +29,7 @@
 			  <div class="card-body">
 			   <p><strong>Nombres</strong> {{ $employee->name }}</p> 
 			   <p><strong>Apellidos</strong> {{ $employee->last_name }}</p>
+			   <p><strong>C.I.</strong> {{ $employee->ci }}</p>
 			   <p><strong>Genero</strong> {{ $employee->sex }}</p> 
 			   <p><strong>Direccion</strong> {{ $employee->address }}</p>
 			   <p><strong>Telefono</strong> {{ $employee->phone }}</p>

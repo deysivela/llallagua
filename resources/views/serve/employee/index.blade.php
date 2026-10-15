@@ -32,6 +32,7 @@
 		        <tr>
 		          <th>Nombre(es)</th>
 		          <th>Apellidos</th>
+		          <th>C.I.</th>
 		          <th>Telefono</th>
 		          <th>Fotografia</th>
 		          <th>Cargo</th>
@@ -43,6 +44,7 @@
 		        <tr>
 		          <td>{{ $en->name }}</td>
 		          <td>{{ $en->last_name }}</td>
+		          <td>{{ $en->ci }}</td>
       			  <td>{{ $en->phone }}</td>
           		  <td>
 		          	<img src="{{ asset($en->photo) }}" class="img-responsive" alt="Image" style="width: 40px; height: 40px; border-radius: 50%; margin-left: 30px;">

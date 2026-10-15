@@ -7,7 +7,7 @@ use Illuminate\Support\Collection;
 
 class Employee extends Model
 {
-    protected $fillable = ['level_id','charge_id','type_employee','name','last_name','sex','address','phone','email','photo'];
+    protected $fillable = ['level_id','charge_id','type_employee','name','last_name','ci','sex','address','phone','email','photo'];
 
     public function users()
     {

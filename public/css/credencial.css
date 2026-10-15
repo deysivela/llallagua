@@ -18,11 +18,11 @@
     /* Ciudad y slogan van 8 px detras de los campos. El slogan se monta 40 px
        sobre el cerro, un poco mas que los 34 px de la maqueta original: es lo
        que queda al bajar el cerro lo maximo posible sin pisar el pie.
-       La ciudad sube 25 em sobre el slogan (87 frente a 112): sin ese extra la
-       cola de la "g" de "Llallagua" (Yellowtail baja ~124 em del top) pisa la
-       palabra "tierra". */
-    --drop-city: 87;
-    --drop-slogan: 112;
+       La ciudad sube 16 em sobre el slogan (82 frente a 98), lo justo para
+       que la cola de la "g" de "Llallagua" (Yellowtail baja ~124 em del top) no
+       pise la palabra "tierra" y el slogan quede lo mas pegado posible. */
+    --drop-city: 82;
+    --drop-slogan: 98;
     /* El Cerro baja mas hasta casi rozar al pie. */
     --drop-cerro: 98;
     /* Separacion entre el rotulo ("Nombres y apellidos:") y su cuadro. */
@@ -542,11 +542,11 @@
 .cred-page--doble {
     --drop-qr: 102;
     --drop-verify: 102;
-    /* La ciudad sube 25 em sobre el slogan (117 frente a 142), igual que en la
+    /* La ciudad sube 16 em sobre el slogan (112 frente a 128), igual que en la
        base: separa "Llallagua" de "tierra de unidad y paz" sin pisar el cuadro
        de "Cargo", que en doble fila acaba mas abajo. */
-    --drop-city: 117;
-    --drop-slogan: 142;
+    --drop-city: 112;
+    --drop-slogan: 128;
 }
 
 /* Imagen decorativa en la esquina superior derecha */
@@ -701,6 +701,12 @@
     background: #fff;
 }
 
+/* Cuando el nombre y el cargo van los dos a una sola fila el bloque de campos
+   es corto y el conjunto queda muy arriba: la foto baja un poco. */
+.cred-page--simple .cred-photo {
+    margin-top: -30em;
+}
+
 /* La foto se puede arrastrar y acercar con el mouse. El clon que se manda a la
    ventana de impresion sale de este mismo elemento, asi que hereda la clase
    editable: por eso las reglas van con body:not(.solo-credencial), que es la
@@ -773,11 +779,22 @@ body:not(.solo-credencial) .cred-photo__img {
     height: 550em;
 }
 
-/* El GAMLL del pie se pone mas grueso, igual que el del encabezado. */
-.impresion-medida .cred-footer {
-    bottom: calc(10 / var(--design-h) * 100%);
+.impresion-medida.cred-page--simple .cred-photo {
+    margin-top: -60em;
 }
 
+/* En la credencial descargada (impresion y PNG) el bloque de campos se acerca
+   mas a la foto de arriba que en la vista previa. */
+.impresion-medida .cred-fields {
+    margin-top: 8em;
+}
+
+/* Si ademas el nombre y el cargo van los dos a dos filas, se pega del todo. */
+.impresion-medida.cred-page--doble .cred-fields {
+    margin-top: -8em;
+}
+
+/* El GAMLL del pie se pone mas grueso, igual que el del encabezado. */
 .impresion-medida .cred-footer span {
     font-weight: 700;
 }
@@ -789,6 +806,15 @@ body:not(.solo-credencial) .cred-photo__img {
     display: flex;
     flex-direction: column;
     gap: calc(15 / var(--design-h) * 100%);
+    /* Cuando el nombre y/o el cargo ocupan una sola fila, el bloque de campos
+       se separa un poco de la foto para no quedar pegado. Solo se pega a la
+       foto cuando AMBOS van a dos filas (clase cred-page--doble), que es el
+       unico caso en el que el bloque es mas alto. */
+    margin-top: 28em;
+}
+
+.cred-page--doble .cred-fields {
+    /* Nombre y cargo a dos filas: el bloque queda pegado a la foto. */
     margin-top: 14em;
 }
 
@@ -854,6 +880,8 @@ body:not(.solo-credencial) .cred-photo__img {
     align-self: flex-start;
     width: 100%;
     min-width: 0;
+    /* Un poco de aire sobre el C.I. para que no quede pegado al Cargo. */
+    margin-top: 14em;
     flex-direction: row;
     align-items: center;
     gap: calc(12 / var(--design-w) * 100%);
@@ -864,19 +892,10 @@ body:not(.solo-credencial) .cred-photo__img {
 }
 
 .cred-field--ci .cred-field__box {
-    flex: 1 1 auto;
-}
-
-.cred-field--ci .cred-field__label {
-    flex-shrink: 0;
-}
-
-.cred-field--ci .cred-field__label {
-    flex-shrink: 0;
-}
-
-.cred-field--ci .cred-field__box {
-    flex: 1 1 auto;
+    /* El cuadro se alarga hasta la mitad de la credencial, un poco mas que los
+       8 numeros justos del C.I. */
+    flex: 0 0 auto;
+    width: 360em;
 }
 
 /* Cerro grande */
@@ -981,7 +1000,7 @@ body:not(.solo-credencial) .cred-photo__img {
     left: 0;
     right: 0;
     margin: 0 auto;
-    bottom: calc(16 / var(--design-h) * 100%);
+    bottom: calc(24 / var(--design-h) * 100%);
     display: flex;
     align-items: center;
     gap: calc(64 / var(--design-w) * 100%);

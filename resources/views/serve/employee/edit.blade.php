@@ -66,6 +66,18 @@
         @endif
 		</div>
 	</div>
+	<div class="form-group">
+		{{ Form::label('ci','Cédula de Identidad', ['class'=>'control-label col-md-4 col-sm-4 col-xs-12']) }}
+		<div class="col-md-8 col-sm-8 col-xs-12">
+		{{ Form::text('ci', null, ['class'=>'form-control', 'placeholder'=>'Ej. 12345678 LP', 'maxlength'=>30]) }}
+		<small>Opcional. Aparece en la credencial como “C.I.”.</small>
+		@if ($errors->has('ci'))
+            <span class="error" role="alert">
+                <strong>{{ $errors->first('ci') }}</strong>
+            </span>
+        @endif
+		</div>
+	</div>
 	{{-- <div class="form-group">
 		{{ Form::label('sex','Sexo', ['class'=>'control-label col-md-4 col-sm-4 col-xs-12']) }}
 		<div class="col-md-8 col-sm-8 col-xs-12">

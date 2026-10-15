@@ -244,6 +244,7 @@ class CredencialController extends Controller
             'fecha' => $credencial->fecha ? $credencial->fecha->format('Y-m-d') : null,
             'nombre' => $credencial->nombre,
             'cargo' => $credencial->cargo,
+            'ci' => $credencial->ci,
             'foto' => $credencial->foto,
             'url' => route('verificar', $credencial->hash),
         ];

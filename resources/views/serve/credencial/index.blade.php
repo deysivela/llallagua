@@ -141,9 +141,9 @@ $employeesJson = $employees->map(function ($e) {
                 </div>
 
                 <img class="cred-cerro" src="{{ asset('client/images/credencial/cerro.png') }}" alt="" onerror="this.hidden=true">
-                <p class="cred-city">Llallagua</p>
+                <p class="cred-city">Llallagua,</p>
                 <div class="cred-slogan-wrap">
-                  <p class="cred-slogan">tierra de unidad y paz</p>
+                  <p class="cred-slogan">Tierra de unidad y paz</p>
                   <span class="cred-slogan-line" aria-hidden="true"></span>
                 </div>
 
@@ -230,9 +230,9 @@ $employeesJson = $employees->map(function ($e) {
       </div>
 
       <img class="cred-cerro" src="{{ asset('client/images/credencial/cerro.png') }}" alt="" onerror="this.hidden=true">
-      <p class="cred-city">Llallagua</p>
+      <p class="cred-city">Llallagua,</p>
       <div class="cred-slogan-wrap">
-        <p class="cred-slogan">tierra de unidad y paz</p>
+        <p class="cred-slogan">Tierra de unidad y paz</p>
         <span class="cred-slogan-line" aria-hidden="true"></span>
       </div>
 

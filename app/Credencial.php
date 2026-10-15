@@ -27,6 +27,11 @@ class Credencial extends Model
         return optional(optional($this->employee)->charges)->charge_employee;
     }
 
+    public function getCiAttribute()
+    {
+        return optional($this->employee)->ci;
+    }
+
     public function getFotoAttribute()
     {
         $photo = optional($this->employee)->photo;

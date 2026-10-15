@@ -34,6 +34,7 @@
     fotoPlaceholder: document.getElementById("preview-foto-placeholder"),
     nombre: document.getElementById("preview-nombre"),
     cargo: document.getElementById("preview-cargo"),
+    ci: document.getElementById("preview-ci"),
   };
 
   try {
@@ -45,6 +46,7 @@
     fotoPlaceholder: document.getElementById("print-foto-placeholder"),
     nombre: document.getElementById("print-nombre"),
     cargo: document.getElementById("print-cargo"),
+    ci: document.getElementById("print-ci"),
   };
 
   const qrImg = {
@@ -174,11 +176,14 @@ const DISENO_H = 1631;
   function renderPreviews() {
     const nombre = stateNombre();
     const cargo = stateCargo();
+    const ci = stateCi();
 
     preview.nombre.textContent = nombre || "—";
     preview.cargo.textContent = cargo || "—";
+    preview.ci.textContent = ci || "—";
     printEl.nombre.textContent = nombre;
     printEl.cargo.textContent = cargo;
+    printEl.ci.textContent = ci;
 
     const foto = stateFoto();
     setPhotoDisplay(preview.foto, preview.fotoPlaceholder, foto);
@@ -186,16 +191,24 @@ const DISENO_H = 1631;
 
     fitText(preview.nombre, 50, 2);
     fitText(preview.cargo, 44, 2);
+    fitText(preview.ci, 46, 1);
     fitText(printEl.nombre, 50, 2);
     fitText(printEl.cargo, 44, 2);
+    fitText(printEl.ci, 46, 1);
 
     // Si el nombre y el cargo ocupan dos filas, el bloque de campos empieza mas
     // abajo y deja el QR y la ciudad pegados: el CSS baja ambos con esta clase.
     // El clon de impresion y el de descarga salen de previewFront, asi que la
     // clase viaja sola a las tres salidas.
     if (previewFront) {
-      const dobleFila = linesOf(preview.nombre) > 1 && linesOf(preview.cargo) > 1;
+      const lineasNombre = linesOf(preview.nombre);
+      const lineasCargo = linesOf(preview.cargo);
+      const dobleFila = lineasNombre > 1 && lineasCargo > 1;
       previewFront.classList.toggle("cred-page--doble", dobleFila);
+      // Si el nombre y el cargo van los dos a una sola fila el bloque queda
+      // corto y el conjunto se ve muy arriba: el CSS baja un poco la foto.
+      const unaFila = lineasNombre <= 1 && lineasCargo <= 1;
+      previewFront.classList.toggle("cred-page--simple", unaFila);
     }
   }
 
@@ -227,6 +240,10 @@ const DISENO_H = 1631;
 
   function stateCargo() {
     return state.rec ? state.rec.cargo : (state.employee ? state.employee.cargo : "");
+  }
+
+  function stateCi() {
+    return state.rec ? state.rec.ci : (state.employee ? state.employee.ci : "");
   }
 
   function stateFoto() {

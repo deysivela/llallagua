@@ -154,6 +154,9 @@
           <div class="row"><dt>Código</dt><dd>{{ $credencial->hash }}</dd></div>
           <div class="row"><dt>Portador</dt><dd>{{ $credencial->nombre }}</dd></div>
           <div class="row"><dt>Cargo</dt><dd>{{ $credencial->cargo }}</dd></div>
+          @if ($credencial->ci)
+            <div class="row"><dt>C.I.</dt><dd>{{ $credencial->ci }}</dd></div>
+          @endif
           <div class="row"><dt>Fecha de emisión</dt><dd>{{ $credencial->fecha ? $credencial->fecha->format('d/m/Y') : '—' }}</dd></div>
         </dl>
       @else
