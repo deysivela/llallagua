@@ -16,7 +16,7 @@
                         <label class="sr-only" for="personal-search">Buscar personal</label>
                         <i class="ti-search" aria-hidden="true"></i>
                         <input class="form-control gam-doc-search" id="personal-search" type="search"
-                            placeholder="Buscar por nombre, nivel o cargo..." autocomplete="off"
+                            placeholder="Buscar por nombre o cargo..." autocomplete="off"
                             data-gam-search="#personal-items" data-gam-item=".buscar"
                             data-gam-empty="#personal-empty">
                     </div>
@@ -27,7 +27,6 @@
                         <thead>
                             <tr>
                                 <th scope="col">Nombre y apellido</th>
-                                <th scope="col">Nivel</th>
                                 <th scope="col">Cargo</th>
                             </tr>
                         </thead>
@@ -37,18 +36,13 @@
                                     <td data-label="Nombre y apellido">
                                         {{ trim($personal->name . ' ' . $personal->last_name) }}
                                     </td>
-                                    <td data-label="Nivel">
-                                        <span class="gam-level-tag">
-                                            {{ optional($personal->levels)->level_employee ?: '—' }}
-                                        </span>
-                                    </td>
                                     <td data-label="Cargo">
                                         {{ optional($personal->charges)->charge_employee ?: '—' }}
                                     </td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="3" class="text-center text-muted">
+                                    <td colspan="2" class="text-center text-muted">
                                         Pronto publicaremos la nómina del personal municipal.
                                     </td>
                                 </tr>

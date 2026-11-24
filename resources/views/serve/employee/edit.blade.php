@@ -117,28 +117,6 @@
 		</div>
 	</div>
 
-	<div class="form-group">
-		{{ Form::label('phone', 'Telefono', ['class'=>'control-label col-md-4 col-sm-4 col-xs-12']) }}
-		<div class="col-md-8 col-sm-8 col-xs-12">
-			{{ Form::text('phone', null,['class'=>'form-control']) }}
-			@if ($errors->has('phone'))
-            <span class="error" role="alert">
-                <strong>{{ $errors->first('phone') }}</strong>
-            </span>
-        @endif
-		</div>
-	</div>
-	<div class="form-group">
-		{{ Form::label('email', 'Correo Electronico', ['class'=>'control-label col-md-4 col-sm-4 col-xs-12']) }}
-		<div class="col-md-8 col-sm-8 col-xs-12">
-			{{ Form::text('email', null,['class'=>'form-control']) }}
-			@if ($errors->has('email'))
-            <span class="error" role="alert">
-                <strong>{{ $errors->first('email') }}</strong>
-            </span>
-        @endif
-		</div>
-	</div>
 	<br>
 	<div class="form-group">
 		{{ Form::label('photo', 'Foto de perfil',['class'=>'control-label col-md-4 col-sm-4']) }}

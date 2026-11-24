@@ -32,6 +32,8 @@ Route::get('cultura', 'WebController@cultura')->name('cultura');
 Route::get('turismo', 'WebController@turismo')->name('turismo');
 Route::get('zoonosis', 'WebController@zoonosis')->name('zoonosis');
 Route::get('subalcaldias', 'WebController@subalcaldias')->name('subalcaldias');
+Route::get('salud', 'Salud\SaludWebController@index')->name('salud.public.index');
+Route::get('salud/{slug}', 'Salud\SaludWebController@show')->name('salud.public.show');
 Route::get('proyectos', 'WebController@proyectos')->name('proyectos');
 Route::get('employee/autoridades', 'WebController@rhautoridades')->name('autoridades');
 Route::get('employee/personal', 'WebController@rhpersonal')->name('personal');
@@ -226,6 +228,39 @@ Route::middleware(['auth'])->group(function () {
 		->middleware('permission:adds.edit');
 	Route::put('adds/{user}', 'AddRoleController@update')->name('adds.update')
 		->middleware('permission:adds.update');
+	// Salud (establecimientos, cronogramas y auditoría)
+	Route::get('admin/salud', 'Salud\SaludAdminController@index')->name('salud.index')
+		->middleware('permission:salud.index');
+	Route::get('admin/salud/create', 'Salud\SaludAdminController@create')->name('salud.create')
+		->middleware('permission:salud.edit');
+	Route::post('admin/salud', 'Salud\SaludAdminController@store')->name('salud.store')
+		->middleware('permission:salud.edit');
+	Route::get('admin/salud/{id}/edit', 'Salud\SaludAdminController@edit')->name('salud.edit')
+		->middleware('permission:salud.edit');
+	Route::put('admin/salud/{id}', 'Salud\SaludAdminController@update')->name('salud.update')
+		->middleware('permission:salud.edit');
+	Route::delete('admin/salud/{id}', 'Salud\SaludAdminController@destroy')->name('salud.destroy')
+		->middleware('permission:salud.destroy');
+	Route::put('admin/salud/{id}/publish', 'Salud\SaludAdminController@publish')->name('salud.publish')
+		->middleware('permission:salud.edit');
+	Route::post('admin/salud/archivos', 'Salud\SaludArchivoController@store')->name('salud.archivos.store')
+		->middleware('permission:salud.edit');
+	Route::get('admin/salud/cronogramas', 'Salud\SaludCronogramaController@index')->name('salud.cronogramas.index')
+		->middleware('permission:salud.cronogramas');
+	Route::get('admin/salud/cronogramas/create', 'Salud\SaludCronogramaController@create')->name('salud.cronogramas.create')
+		->middleware('permission:salud.cronogramas');
+	Route::post('admin/salud/cronogramas', 'Salud\SaludCronogramaController@store')->name('salud.cronogramas.store')
+		->middleware('permission:salud.cronogramas');
+	Route::get('admin/salud/cronogramas/{id}/edit', 'Salud\SaludCronogramaController@edit')->name('salud.cronogramas.edit')
+		->middleware('permission:salud.cronogramas');
+	Route::put('admin/salud/cronogramas/{id}', 'Salud\SaludCronogramaController@update')->name('salud.cronogramas.update')
+		->middleware('permission:salud.cronogramas');
+	Route::delete('admin/salud/cronogramas/{id}', 'Salud\SaludCronogramaController@destroy')->name('salud.cronogramas.destroy')
+		->middleware('permission:salud.cronogramas');
+	Route::put('admin/salud/cronogramas/{id}/publish', 'Salud\SaludCronogramaController@publish')->name('salud.cronogramas.publish')
+		->middleware('permission:salud.cronogramas');
+	Route::get('admin/salud/auditoria', 'Salud\SaludAuditoriaController@index')->name('salud.auditoria.index')
+		->middleware('permission:salud.auditoria');
 });
 Route::get('charges', 'ChargeController@index')->name('charges.index');
 Route::get('charges/create', 'ChargeController@create')->name('charges.create');

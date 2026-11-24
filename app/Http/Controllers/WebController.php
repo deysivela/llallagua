@@ -10,6 +10,7 @@ use App\Employee;
 use App\Salarie;
 use App\Contact;
 use App\Charge;
+use App\Salud\SaludCronogramaMensual;
 use Carbon\Carbon;
 
 class WebController extends Controller
@@ -252,6 +253,64 @@ class WebController extends Controller
                'is_image' => true,
                'open_file' => false,
                'date' => $uploadedAt,
+               'uploaded_at' => $uploadedAt,
+               'is_new' => $uploadedAt->gte(Carbon::now()->subDays($freshDays)),
+            ]);
+         });
+
+      // Solo campañas, ferias, brigadas y actividades importantes vigentes de Salud (excluye roles y cronogramas de atención).
+      SaludCronogramaMensual::with(['establecimiento.foto', 'archivo', 'servicio'])
+         ->campanasPortada()
+         ->orderBy('created_at', 'desc')
+         ->orderBy('id', 'desc')
+         ->take(8)
+         ->get()
+         ->each(function ($item) use ($items, $freshDays) {
+            if (!$item->establecimiento || !$item->establecimiento->activo) {
+               return;
+            }
+
+            $tituloTexto = trim((string) $item->titulo);
+            if ($tituloTexto !== '' && preg_match('/^(cronograma|rol\s+de\s+turnos|rol\s+m[eé]dico)\b/iu', $tituloTexto)) {
+               return;
+            }
+
+            $uploadedAt = $this->parseContentDate($item->created_at) ?: Carbon::now('America/La_Paz');
+            $displayDate = $item->fecha_fin ?: ($item->mes ?: $uploadedAt);
+
+            $preview = null;
+            if ($item->archivo && $item->archivo->esImagen()) {
+               $preview = $item->archivo->urlPublica();
+            } elseif ($item->establecimiento->fotoUrlGrande()) {
+               $preview = $item->establecimiento->fotoUrlGrande();
+            } elseif ($item->establecimiento->fotoUrl()) {
+               $preview = $item->establecimiento->fotoUrl();
+            } else {
+               $preview = asset('client/images/log.png');
+            }
+
+            $partesDesc = [];
+            if ($item->fecha_fin) {
+               $partesDesc[] = 'Hasta el ' . $item->fecha_fin->format('d/m/Y');
+            }
+            $partesDesc[] = $item->establecimiento->nombre_corto;
+            if ($item->nota) {
+               $partesDesc[] = trim(preg_replace('/\s+/', ' ', strip_tags($item->nota)));
+            }
+
+            $items->push([
+               'type' => 'salud_actividad',
+               'label' => 'Salud · ' . $item->tipo_corto,
+               'icon' => 'icon-Heart',
+               'title' => $item->titulo ?: ($item->tipo_corto . ' — ' . $item->establecimiento->nombre_corto),
+               'description' => implode(' · ', $partesDesc),
+               'code' => null,
+               'url' => route('salud.public.show', $item->establecimiento->slug) . '#cronogramas',
+               'preview' => $preview,
+               'is_pdf' => false,
+               'is_image' => true,
+               'open_file' => false,
+               'date' => $displayDate,
                'uploaded_at' => $uploadedAt,
                'is_new' => $uploadedAt->gte(Carbon::now()->subDays($freshDays)),
             ]);

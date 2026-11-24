@@ -29,8 +29,6 @@
 			  <div class="card-body">
 			   <p><strong>Nombre</strong> {{ $user->employees['name'] }}</p> 
 			   <p><strong>Apellido</strong> {{ $user->employees['last_name'] }}</p> 
-			   <p><strong>Correo electronico</strong> {{ $user->employees['email'] }}</p> 
-			   <p><strong>Telefono</strong> {{ $user->employees['phone'] }}</p>
 			   <p><strong>Estado</strong> {{ $user->statu }}</p> 
 				<div class="clearfix"></div>
 				<div class="ln_solid"></div>

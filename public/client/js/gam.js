@@ -11,7 +11,7 @@
       return;
     }
     /* Sin slider/banner oscuro el menú blanco se pierde: fondo siempre sólido */
-    var $hero = $('#slider-sec, .banner-innerpage, .gam-page-banner').not('.gam-page-banner--plain');
+    var $hero = $('#slider-sec, .banner-innerpage, .gam-page-banner, .salud-hero, .salud-detail-hero').not('.gam-page-banner--plain');
     var hasHero = $hero.length > 0;
     $bar.toggleClass('gam-topbar-solid', !hasHero);
     var scrolled = $(window).scrollTop() >= 60;

@@ -1,0 +1,1091 @@
+/* ==========================================================================
+   Salud — GAM Llallagua
+   Listado y detalle de establecimientos de salud.
+   ========================================================================== */
+
+.salud-hero,
+.salud-detail-hero {
+    position: relative;
+    overflow: hidden;
+    color: #ffffff;
+    background:
+        radial-gradient(circle at 88% 12%, rgba(255, 181, 0, 0.28), transparent 38%),
+        radial-gradient(circle at 12% 88%, rgba(229, 248, 230, 0.18), transparent 42%),
+        linear-gradient(135deg, #04530a 0%, #087a0a 52%, #0bb70f 100%);
+}
+
+.salud-hero::after,
+.salud-detail-hero::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(rgba(255, 255, 255, 0.14) 1px, transparent 1px);
+    background-size: 22px 22px;
+    opacity: 0.35;
+    pointer-events: none;
+}
+
+.salud-hero .container,
+.salud-detail-hero .container {
+    position: relative;
+    z-index: 1;
+}
+
+.salud-hero {
+    padding: 72px 0 58px;
+}
+
+.salud-hero__inner {
+    max-width: 820px;
+}
+
+.salud-eyebrow {
+    margin: 0 0 10px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #fff2d6;
+}
+
+.salud-title {
+    margin: 0 0 14px;
+    font-size: clamp(30px, 4.2vw, 46px);
+    line-height: 1.08;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: #ffffff;
+}
+
+.salud-lead {
+    margin: 0;
+    max-width: 640px;
+    font-size: 17px;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.86);
+}
+
+.salud-stats {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+    margin: 30px 0 0;
+    padding: 0;
+}
+
+.salud-stat {
+    padding: 16px 18px;
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(8px);
+}
+
+.salud-stat dt {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.72);
+}
+
+.salud-stat dd {
+    margin: 4px 0 0;
+    font-size: 26px;
+    font-weight: 800;
+    line-height: 1;
+    color: #ffffff;
+}
+
+/* --------------------------------------------------------------------------
+   Página
+   -------------------------------------------------------------------------- */
+
+.salud-page {
+    padding: 34px 0 72px;
+    background: #f4f7f4;
+}
+
+.salud-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px;
+    margin-bottom: 26px;
+    border-radius: 18px;
+    background: #ffffff;
+    border: 1px solid #e1e8e1;
+    box-shadow: 0 14px 34px -26px rgba(4, 83, 10, 0.45);
+}
+
+.salud-search {
+    position: relative;
+    flex: 1 1 320px;
+}
+
+.salud-search__icon {
+    position: absolute;
+    top: 50%;
+    left: 14px;
+    transform: translateY(-50%);
+    color: #6b756e;
+}
+
+.salud-search input {
+    width: 100%;
+    height: 46px;
+    padding: 10px 16px 10px 42px;
+    border: 1px solid #d5dfd6;
+    border-radius: 12px;
+    background: #f7faf7;
+    color: #262b27;
+    font-size: 15px;
+    outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.salud-search input:focus {
+    border-color: #0bb70f;
+    background: #ffffff;
+    box-shadow: 0 0 0 4px rgba(11, 183, 15, 0.14);
+}
+
+.salud-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.salud-chip {
+    padding: 8px 14px;
+    border: 1px solid #d5dfd6;
+    border-radius: 999px;
+    background: #ffffff;
+    color: #3e4841;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1;
+    cursor: pointer;
+    transition: background 0.18s ease, color 0.18s ease, border-color 0.18s ease, transform 0.18s ease;
+}
+
+.salud-chip:hover {
+    border-color: #0bb70f;
+    color: #087a0a;
+    transform: translateY(-1px);
+}
+
+.salud-chip:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(11, 183, 15, 0.25);
+}
+
+.salud-chip.is-active {
+    border-color: #087a0a;
+    background: #087a0a;
+    color: #ffffff;
+}
+
+/* --------------------------------------------------------------------------
+   Grilla y tarjetas
+   -------------------------------------------------------------------------- */
+
+.salud-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 22px;
+}
+
+.salud-card {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border-radius: 18px;
+    background: #ffffff;
+    border: 1px solid #e1e8e1;
+    box-shadow: 0 18px 40px -34px rgba(4, 83, 10, 0.55);
+    transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+}
+
+.salud-card:hover {
+    transform: translateY(-4px);
+    border-color: #c4dcc6;
+    box-shadow: 0 26px 48px -30px rgba(4, 83, 10, 0.45);
+}
+
+.salud-card[hidden] {
+    display: none !important;
+}
+
+.salud-card__media {
+    position: relative;
+    display: block;
+    aspect-ratio: 16 / 10;
+    background: linear-gradient(135deg, #e5f8e6, #c9e8cc);
+    overflow: hidden;
+}
+
+.salud-card__media::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0) 52%, rgba(8, 32, 10, 0.56) 100%);
+    pointer-events: none;
+}
+
+.salud-card__media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+}
+
+.salud-card:hover .salud-card__media img {
+    transform: scale(1.04);
+}
+
+.salud-card__placeholder {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    color: #0b8a10;
+    opacity: 0.7;
+}
+
+.salud-status {
+    position: absolute;
+    bottom: 12px;
+    left: 12px;
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 11px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    color: #ffffff;
+    background: rgba(38, 43, 39, 0.78);
+    backdrop-filter: blur(4px);
+}
+
+.salud-status--open {
+    background: rgba(8, 122, 10, 0.92);
+}
+
+.salud-status--closed {
+    background: rgba(90, 99, 93, 0.9);
+}
+
+.salud-status__dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: currentColor;
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.22);
+}
+
+.salud-status--open .salud-status__dot {
+    animation: salud-pulse 2.4s ease-in-out infinite;
+}
+
+@keyframes salud-pulse {
+    0%, 100% { box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.22); }
+    50% { box-shadow: 0 0 0 6px rgba(255, 255, 255, 0.1); }
+}
+
+.salud-card__body {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    padding: 18px 18px 20px;
+}
+
+.salud-card__type {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    margin: 0 0 7px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #6b756e;
+}
+
+.salud-card__level {
+    display: inline-block;
+    padding: 2px 7px;
+    border-radius: 6px;
+    background: #eaf4eb;
+    color: #087a0a;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    text-transform: none;
+}
+
+.salud-badge-24h {
+    display: inline-block;
+    margin-left: 2px;
+    padding: 3px 7px;
+    border-radius: 6px;
+    background: #fff2d6;
+    color: #8a5f00;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+}
+
+.salud-card__title {
+    margin: 0 0 12px;
+    font-size: 19px;
+    line-height: 1.3;
+    font-weight: 700;
+}
+
+.salud-card__title a {
+    color: #262b27;
+    text-decoration: none;
+}
+
+.salud-card__title a:hover,
+.salud-card__title a:focus {
+    color: #087a0a;
+}
+
+.salud-meta {
+    list-style: none;
+    margin: 0 0 14px;
+    padding: 0;
+    display: grid;
+    gap: 8px;
+}
+
+.salud-meta li {
+    display: flex;
+    gap: 9px;
+    align-items: flex-start;
+    font-size: 13.5px;
+    line-height: 1.45;
+    color: #5b655f;
+}
+
+.salud-meta svg {
+    flex: 0 0 auto;
+    margin-top: 2px;
+    color: #0b8a10;
+}
+
+.salud-meta a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.salud-meta a:hover {
+    color: #087a0a;
+}
+
+.salud-card__address-link {
+    text-decoration: underline !important;
+    text-decoration-color: rgba(11, 138, 16, 0.35) !important;
+    text-underline-offset: 2px;
+    transition: color 0.18s ease, text-decoration-color 0.18s ease;
+}
+
+.salud-card__address-link:hover {
+    color: #087a0a !important;
+    text-decoration-color: #087a0a !important;
+}
+
+.salud-services {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 0 0 16px;
+    padding: 0;
+}
+
+.salud-services li {
+    padding: 4px 9px;
+    border-radius: 7px;
+    background: #eff6ef;
+    color: #3e4841;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.salud-services__more {
+    background: #fff2d6 !important;
+    color: #8a5f00 !important;
+}
+
+.salud-card__actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: auto;
+    padding-top: 12px;
+    border-top: 1px solid #eef3ee;
+}
+
+.salud-card__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 700;
+    color: #087a0a;
+    text-decoration: none;
+}
+
+.salud-card__link:hover {
+    color: #04530a;
+    text-decoration: none;
+}
+
+.salud-card__link span {
+    transition: transform 0.2s ease;
+}
+
+.salud-card__link:hover span {
+    transform: translateX(4px);
+}
+
+.salud-card__map-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 6px 11px;
+    border-radius: 999px;
+    background: #eff6ef;
+    border: 1px solid #d5e6d6;
+    color: #087a0a;
+    font-size: 12px;
+    font-weight: 700;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background 0.18s ease, color 0.18s ease, border-color 0.18s ease, transform 0.18s ease;
+}
+
+.salud-card__map-btn:hover,
+.salud-card__map-btn:focus {
+    background: #087a0a;
+    border-color: #087a0a;
+    color: #ffffff;
+    text-decoration: none;
+    transform: translateY(-1px);
+}
+
+.salud-empty {
+    padding: 48px 24px;
+    border-radius: 18px;
+    background: #ffffff;
+    border: 1px dashed #c4dcc6;
+    text-align: center;
+}
+
+.salud-empty h2 {
+    margin: 0 0 8px;
+    font-size: 20px;
+    color: #262b27;
+}
+
+.salud-empty p {
+    margin: 0;
+    color: #5b655f;
+}
+
+/* --------------------------------------------------------------------------
+   Detalle
+   -------------------------------------------------------------------------- */
+
+.salud-detail-hero {
+    position: relative;
+    padding: 36px 0 34px;
+    min-height: 460px;
+    display: flex;
+    align-items: flex-end;
+    background-color: #062b0a;
+}
+
+.salud-detail-hero__backdrop {
+    position: absolute;
+    inset: -24px;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    filter: blur(22px) brightness(0.45);
+    transform: scale(1.06);
+    z-index: 0;
+}
+
+.salud-detail-hero__bg {
+    position: absolute;
+    inset: 0;
+    background-size: contain;
+    background-position: center center;
+    background-repeat: no-repeat;
+    z-index: 1;
+}
+
+.salud-detail-hero--has-bg::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        180deg,
+        rgba(0, 0, 0, 0) 0%,
+        rgba(0, 0, 0, 0.04) 52%,
+        rgba(4, 24, 6, 0.65) 82%,
+        rgba(3, 18, 5, 0.85) 100%
+    );
+    z-index: 2;
+    pointer-events: none;
+}
+
+.salud-detail-hero--has-bg::after {
+    display: none;
+}
+
+.salud-detail-hero .container {
+    width: 100%;
+    position: relative;
+    z-index: 3;
+}
+
+.salud-detail-hero__content {
+    max-width: 820px;
+}
+
+.salud-detail-hero__content .salud-title {
+    margin: 0 0 12px;
+    font-size: clamp(28px, 3.6vw, 42px);
+    text-shadow: 0 2px 16px rgba(0, 0, 0, 0.65);
+}
+
+.salud-detail-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 0 0 14px;
+}
+
+.salud-detail-badges .salud-status {
+    position: static;
+}
+
+.salud-detail-badges .salud-badge-24h {
+    margin-left: 0;
+    padding: 6px 11px;
+    font-size: 11px;
+}
+
+.salud-meta--light {
+    margin: 0;
+}
+
+.salud-meta--light li {
+    color: #ffffff;
+    font-size: 14.5px;
+    font-weight: 500;
+    text-shadow: 0 1px 10px rgba(0, 0, 0, 0.7);
+}
+
+.salud-meta--light svg {
+    color: #fff2d6;
+    filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.5));
+}
+
+.salud-page--detail {
+    padding-top: 36px;
+}
+
+.salud-detail-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 340px;
+    gap: 24px;
+    align-items: start;
+}
+
+.salud-detail-main,
+.salud-detail-aside {
+    display: grid;
+    gap: 20px;
+    align-content: start;
+}
+
+.salud-panel {
+    padding: 24px;
+    border-radius: 18px;
+    background: #ffffff;
+    border: 1px solid #e1e8e1;
+    box-shadow: 0 18px 40px -34px rgba(4, 83, 10, 0.5);
+}
+
+.salud-panel--compact {
+    padding: 18px 22px;
+}
+
+.salud-panel__title {
+    margin: 0 0 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #eaf0ea;
+    font-size: 17px;
+    font-weight: 700;
+    color: #262b27;
+}
+
+.salud-prose {
+    margin: 0;
+    font-size: 14.5px;
+    line-height: 1.7;
+    color: #4b554e;
+    white-space: pre-line;
+}
+
+.salud-list {
+    margin: 12px 0 0;
+    padding-left: 18px;
+    color: #4b554e;
+    font-size: 14px;
+    line-height: 1.7;
+}
+
+.salud-service-groups {
+    display: grid;
+    gap: 20px;
+}
+
+.salud-service-group h3 {
+    margin: 0 0 10px;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #0b8a10;
+}
+
+.salud-service-group > ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 8px;
+}
+
+.salud-service-group > ul.salud-service-grid {
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 10px;
+}
+
+.salud-service-group > ul > li {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: baseline;
+    padding: 10px 12px;
+    border-radius: 10px;
+    background: #f6faf6;
+    border: 1px solid #eaf0ea;
+}
+
+.salud-service-group > ul > li strong {
+    font-size: 14px;
+    color: #262b27;
+}
+
+.salud-service-group > ul > li span {
+    font-size: 13px;
+    color: #5b655f;
+}
+
+.salud-service-group > ul > li.salud-service-item--detailed {
+    display: block;
+    padding: 14px 16px;
+}
+
+.salud-service-group > ul > li.salud-service-item--detailed > strong {
+    display: block;
+    font-size: 14.5px;
+    margin-bottom: 6px;
+}
+
+.salud-service-item__resp {
+    margin: 0 0 8px;
+    font-size: 13.5px;
+    font-weight: 600;
+    color: #087a0a;
+}
+
+.salud-service-item__list {
+    list-style: disc;
+    margin: 0;
+    padding-left: 20px;
+    display: grid;
+    gap: 5px;
+    color: #4b554e;
+    font-size: 13.5px;
+    line-height: 1.55;
+}
+
+.salud-service-item__list li {
+    padding: 0;
+    border: 0;
+    background: transparent;
+}
+
+.salud-table-wrap {
+    overflow-x: auto;
+    margin: 0 -6px;
+    padding: 0 6px;
+}
+
+.salud-table {
+    width: 100%;
+    min-width: 620px;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: 13.5px;
+}
+
+.salud-table th {
+    padding: 10px 12px;
+    border-bottom: 2px solid #e1e8e1;
+    text-align: left;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #6b756e;
+    white-space: nowrap;
+}
+
+.salud-table td {
+    padding: 11px 12px;
+    border-bottom: 1px solid #eef3ee;
+    color: #4b554e;
+    vertical-align: top;
+}
+
+.salud-table tbody tr:hover td {
+    background: #f8fbf8;
+}
+
+.salud-hours {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 10px;
+}
+
+.salud-hours li {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 4px 12px;
+    padding: 12px 14px;
+    border-radius: 10px;
+    background: #f6faf6;
+    border: 1px solid #eaf0ea;
+}
+
+.salud-hours__days {
+    font-weight: 700;
+    font-size: 13.5px;
+    color: #262b27;
+}
+
+.salud-hours__time {
+    font-weight: 700;
+    font-size: 13.5px;
+    color: #087a0a;
+    white-space: nowrap;
+}
+
+.salud-hours__note {
+    grid-column: 1 / -1;
+    font-size: 12px;
+    color: #6b756e;
+}
+
+.salud-map {
+    overflow: hidden;
+    border-radius: 12px;
+    border: 1px solid #e1e8e1;
+    margin-bottom: 12px;
+    background: #eff6ef;
+}
+
+.salud-map iframe {
+    display: block;
+    width: 100%;
+    height: 220px;
+    border: 0;
+}
+
+.salud-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-height: 42px;
+    padding: 10px 16px;
+    border-radius: 10px;
+    background: #087a0a;
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.salud-btn:hover {
+    background: #04530a;
+    color: #ffffff;
+    text-decoration: none;
+    transform: translateY(-1px);
+}
+
+.salud-specialty-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.salud-specialty-card {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 12px 14px;
+    border-radius: 12px;
+    background: #f6faf6;
+    border: 1px solid #e3eee4;
+}
+
+.salud-specialty-card__label {
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: #087a0a;
+}
+
+.salud-specialty-card__value {
+    font-size: 13.5px;
+    line-height: 1.5;
+    color: #364039;
+}
+
+.salud-downloads {
+    display: grid;
+    gap: 12px;
+}
+
+.salud-download__meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 5px;
+}
+
+.salud-download__badge {
+    display: inline-block;
+    padding: 3px 9px;
+    border-radius: 999px;
+    background: #e5f8e6;
+    color: #087a0a;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.03em;
+}
+
+.salud-download {
+    display: flex;
+    gap: 14px;
+    padding: 14px;
+    border-radius: 12px;
+    border: 1px solid #eaf0ea;
+    background: #f8fbf8;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.salud-download:hover {
+    border-color: #c4dcc6;
+    box-shadow: 0 12px 26px -22px rgba(4, 83, 10, 0.55);
+}
+
+.salud-download__icon {
+    flex: 0 0 64px;
+    width: 64px;
+    height: 64px;
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+    border-radius: 10px;
+    background: #e5f8e6;
+    color: #087a0a;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+}
+
+.salud-download__icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.salud-download__body {
+    min-width: 0;
+}
+
+.salud-download__period {
+    margin: 0 0 2px;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #0b8a10;
+}
+
+.salud-download__body h3 {
+    margin: 0 0 4px;
+    font-size: 15px;
+    font-weight: 700;
+    color: #262b27;
+}
+
+.salud-download__service,
+.salud-download__note {
+    margin: 0 0 6px;
+    font-size: 12.5px;
+    color: #6b756e;
+}
+
+.salud-download__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 13px;
+    font-weight: 700;
+    color: #087a0a;
+    text-decoration: none;
+}
+
+.salud-download__link:hover {
+    color: #04530a;
+    text-decoration: none;
+}
+
+.salud-download--image {
+    flex-direction: column;
+    gap: 10px;
+}
+
+.salud-download__preview {
+    display: block;
+    overflow: hidden;
+    border-radius: 10px;
+    border: 1px solid #e1e8e1;
+    background: #ffffff;
+}
+
+.salud-download__preview img {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+/* --------------------------------------------------------------------------
+   Responsive
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 991px) {
+    .salud-detail-layout {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 767px) {
+    .salud-hero {
+        padding: 52px 0 42px;
+    }
+
+    .salud-detail-hero {
+        padding: 22px 0 36px;
+        min-height: 320px;
+    }
+
+    .salud-detail-hero__box {
+        padding: 20px 18px;
+        border-radius: 18px;
+    }
+
+    .salud-meta--hero {
+        grid-template-columns: 1fr;
+    }
+
+    .salud-stats {
+        grid-template-columns: 1fr;
+    }
+
+    .salud-stat {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        padding: 12px 16px;
+    }
+
+    .salud-stat dd {
+        font-size: 22px;
+    }
+
+    .salud-toolbar {
+        padding: 14px;
+    }
+
+    .salud-search {
+        flex-basis: 100%;
+    }
+
+    .salud-filters {
+        width: 100%;
+    }
+
+    .salud-panel {
+        padding: 20px 18px;
+    }
+
+    .salud-download {
+        flex-direction: column;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .salud-card,
+    .salud-card__media img,
+    .salud-chip,
+    .salud-btn,
+    .salud-card__link span,
+    .salud-status__dot {
+        animation: none !important;
+        transition: none !important;
+    }
+}
+
+.bt-top {
+    display: none !important;
+}
+
+

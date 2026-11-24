@@ -123,12 +123,6 @@
                                 <span class="gam-side-label">Responsable</span>
                                 <span>{{ $persona->full_name }}</span>
                             </li>
-                            @if ($persona->public_phone)
-                                <li>
-                                    <span class="gam-side-label">Celular</span>
-                                    <a href="{{ $persona->tel_href }}">{{ $persona->public_phone }}</a>
-                                </li>
-                            @endif
                         @endforeach
                         <li>
                             <span class="gam-side-label">Correo electrónico</span>

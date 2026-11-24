@@ -25,6 +25,7 @@
     <link href="{{ asset('client/css/animate.css') }}" rel="stylesheet">
     <link href="{{ asset('client/css/llallagua.css') }}?v={{ @filemtime(public_path('client/css/llallagua.css')) }}"
         rel="stylesheet">
+    @stack('styles')
     <script src="{{ asset('client/assets/modules/jquery/dist/jquery.min.js') }}"></script>
 </head>
 
@@ -122,8 +123,6 @@
                 </div>
             </div>
         </footer>
-        <a class="bt-top btn btn-circle btn-lg btn-info" href="#top" aria-label="Volver arriba"><i
-                class="ti-arrow-up"></i></a>
     </div>
     @include('client.partials.news-detail-modal')
     <script src="{{ asset('client/assets/modules/popper/dist/popper.min.js') }}"></script>

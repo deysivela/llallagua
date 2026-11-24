@@ -191,10 +191,10 @@ const DISENO_H = 1631;
 
     fitText(preview.nombre, 50, 2);
     fitText(preview.cargo, 44, 2);
-    fitText(preview.ci, 46, 1);
+    fitText(preview.ci, 48, 1);
     fitText(printEl.nombre, 50, 2);
     fitText(printEl.cargo, 44, 2);
-    fitText(printEl.ci, 46, 1);
+    fitText(printEl.ci, 48, 1);
 
     // Si el nombre y el cargo ocupan dos filas, el bloque de campos empieza mas
     // abajo y deja el QR y la ciudad pegados: el CSS baja ambos con esta clase.

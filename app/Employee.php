@@ -7,7 +7,7 @@ use Illuminate\Support\Collection;
 
 class Employee extends Model
 {
-    protected $fillable = ['level_id','charge_id','type_employee','name','last_name','ci','sex','address','phone','email','photo'];
+    protected $fillable = ['level_id','charge_id','type_employee','name','last_name','ci','sex','address','photo'];
 
     public function users()
     {
@@ -27,6 +27,11 @@ class Employee extends Model
     public function salaries()
     {
     	return $this->belongsTo(Salarie::class,'salarie_id');
+    }
+
+    public function credencial()
+    {
+        return $this->hasOne(Credencial::class, 'employee_id');
     }
 
     public function getFullNameAttribute()
@@ -188,46 +193,20 @@ class Employee extends Model
         return optional($this->charges)->charge_employee;
     }
 
-    public function getPublicEmailAttribute()
-    {
-        $email = preg_replace('/\s+/', '', (string) $this->email);
-
-        if ($email === '' || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            return null;
-        }
-
-        return $email;
-    }
-
-    public function getPublicPhoneAttribute()
-    {
-        $phone = preg_replace('/\D+/', '', (string) $this->phone);
-
-        if ($phone === '' || $phone === '0') {
-            return null;
-        }
-
-        return $phone;
-    }
-
-    public function getTelHrefAttribute()
-    {
-        if (!$this->public_phone) {
-            return null;
-        }
-
-        return 'tel:+591' . $this->public_phone;
-    }
-
     /**
-     * Nómina pública: autoridades, directores, responsables/encargados, unidades y el resto.
+     * Nómina pública: solo personal que cuenta con credencial emitida,
+     * manteniendo siempre a concejales y subalcaldes aunque no tengan credencial.
      *
      * @return \Illuminate\Support\Collection
      */
     public static function forNominaPersonal()
     {
-        return static::with(['charges', 'levels'])
+        return static::with(['charges', 'levels', 'credencial'])
             ->get()
+            ->filter(function ($employee) {
+                return $employee->credencial !== null
+                    || in_array($employee->nominaGroupRank(), [2, 3], true);
+            })
             ->sortBy(function ($employee) {
                 return sprintf(
                     '%02d-%02d-%s-%s-%s',

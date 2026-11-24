@@ -1,7 +1,8 @@
 @php
     $rutaActual = Route::currentRouteName();
+    $centrosSalud = \App\Salud\SaludEstablecimiento::activos()->ordenados()->get(['nombre', 'slug']);
 
-    $grupoMunicipio = ['alcalde', 'autoridades', 'personal', 'escala-salarial', 'subalcaldias'];
+    $grupoMunicipio = ['alcalde', 'autoridades', 'personal', 'escala-salarial', 'subalcaldias', 'salud.public.index', 'salud.public.show'];
     $grupoDocumentos = [
         'gacetas',
         'leyes-municipales',
@@ -48,7 +49,7 @@
                                 aria-haspopup="true" aria-expanded="false">
                                 Municipio <i class="fa fa-angle-down m-l-5"></i>
                             </a>
-                            <div class="dropdown-menu b-none font-14 gam-mega" aria-labelledby="nav-municipio">
+                            <div class="dropdown-menu b-none font-14 gam-mega gam-mega--wide" aria-labelledby="nav-municipio">
                                 <div class="gam-mega-grid">
                                     <div class="gam-mega-col">
                                         <h6 class="gam-mega-title">Institución</h6>
@@ -74,6 +75,16 @@
                                         <a class="dropdown-item" href="{{ route('subalcaldias') }}#sicoya">Sikuya</a>
                                         <a class="dropdown-item"
                                             href="{{ route('subalcaldias') }}#sakamarca">Sakamarca</a>
+                                    </div>
+                                    <div class="gam-mega-col">
+                                        <h6 class="gam-mega-title gam-mega-title--link">
+                                            <a href="{{ route('salud.public.index') }}">
+                                                Salud <i class="ti-arrow-right" aria-hidden="true"></i>
+                                            </a>
+                                        </h6>
+                                        @foreach($centrosSalud as $centroSalud)
+                                            <a class="dropdown-item" href="{{ route('salud.public.show', $centroSalud->slug) }}" title="{{ $centroSalud->nombre }}">{{ $centroSalud->nombre_corto }}</a>
+                                        @endforeach
                                     </div>
                                 </div>
                             </div>
@@ -160,3 +171,4 @@
         </div>
     </div>
 </div>
+

@@ -896,6 +896,11 @@ body:not(.solo-credencial) .cred-photo__img {
        8 numeros justos del C.I. */
     flex: 0 0 auto;
     width: 360em;
+    /* La letra del C.I. es un poco mas grande que la del Cargo, pero el cuadro
+       tiene que quedar del mismo alto: se compensa bajando el relleno vertical
+       (1.15 * 48 + 2 * 7.7 + 4 = 74.6, igual que Cargo). */
+    padding-top: 7.7em;
+    padding-bottom: 7.7em;
 }
 
 /* Cerro grande */

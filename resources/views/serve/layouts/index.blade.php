@@ -227,6 +227,22 @@
                     </ul>
                   </li>
                   @endcan
+                  @can('salud.index')
+                  <li><a><i class="fa fa-medkit"></i> Salud <span class="fa fa-chevron-down"></span></a>
+                    <ul class="nav child_menu">
+                      @can('salud.edit')
+                      <li><a href="{{ route('salud.create') }}">Nuevo establecimiento</a></li>
+                      @endcan
+                      <li><a href="{{ route('salud.index') }}">Administrar Salud</a></li>
+                      @can('salud.cronogramas')
+                      <li><a href="{{ route('salud.cronogramas.index') }}">Cronogramas mensuales</a></li>
+                      @endcan
+                      @can('salud.auditoria')
+                      <li><a href="{{ route('salud.auditoria.index') }}">Auditoría</a></li>
+                      @endcan
+                    </ul>
+                  </li>
+                  @endcan
                   @can('actividad.index')
                   <li><a><i class="fa fa-calendar"></i> Actividades <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">

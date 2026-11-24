@@ -176,7 +176,7 @@
 
                 <div class="gam-zoonosis-location-map">
                     <iframe
-                        src="https://maps.google.com/maps?q={{ urlencode($zoonosisMapsQuery) }}&amp;hl=es-419&amp;z=18&amp;output=embed"
+                        src="https://maps.google.com/maps?q={{ urlencode($zoonosisMapsQuery) }}&amp;t=k&amp;hl=es-419&amp;z=18&amp;output=embed"
                         title="Mapa GPS de la Unidad de Zoonosis: {{ $zoonosisGps }}"
                         loading="lazy"
                         referrerpolicy="no-referrer-when-downgrade"

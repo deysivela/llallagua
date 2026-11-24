@@ -16,6 +16,8 @@ class DatabaseSeeder extends Seeder
         $this->call(CulturaPermissionsSeeder::class);
         $this->call(ZoonosisPermissionsSeeder::class);
         $this->call(ActividadesPermissionsSeeder::class);
+        $this->call(SaludPermissionsSeeder::class);
+        $this->call(SaludEstablecimientosSeeder::class);
         // $this->call(CategoriesTableSeeder::class);
         // $this->call(DocumentsTableSeeder::class);
     }

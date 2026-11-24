@@ -32,8 +32,6 @@
 			   <p><strong>C.I.</strong> {{ $employee->ci }}</p>
 			   <p><strong>Genero</strong> {{ $employee->sex }}</p> 
 			   <p><strong>Direccion</strong> {{ $employee->address }}</p>
-			   <p><strong>Telefono</strong> {{ $employee->phone }}</p>
-			   <p><strong>Correo electronico</strong> {{ $employee->email }}</p>
 			   <p><strong>Nivel de Empleado</strong> {{ $employee->levels->level_employee }}</p>
 			   <p><strong>Tipo de Empleado</strong> {{ $employee->type_employee }}</p>
 			   <p><strong>Cargo del Empleado</strong> {{ $employee->charges->charge_employee}}</p>

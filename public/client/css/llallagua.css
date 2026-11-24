@@ -169,6 +169,7 @@ button:focus-visible,
 .topbar {
   background: transparent;
   box-shadow: none;
+  top: 0;
   transition: box-shadow 0.3s ease, background-color 0.3s ease;
 }
 
@@ -381,6 +382,25 @@ button:focus-visible,
 
 .page-wrapper {
   padding-top: 0;
+  display: flow-root;
+  margin-top: 0 !important;
+}
+
+/* Evita que el primer bloque deje asomar el fondo del documento sobre el hero. */
+body,
+#main-wrapper,
+.page-wrapper,
+.page-wrapper > .container-fluid {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+}
+
+.page-wrapper > .container-fluid {
+  margin-bottom: 0;
+}
+
+.page-wrapper > .container-fluid > :first-child {
+  margin-top: 0 !important;
 }
 
 /* Tablet 992-1023px: conserva el header de escritorio (style.css lo vuelve relativo) */
@@ -843,34 +863,9 @@ html body .btn-info-gradiant:focus {
   transform: translateY(-2px);
 }
 
+.bt-top,
 .bt-top.btn-info {
-  background: var(--gam-yellow);
-  border-color: var(--gam-yellow);
-  color: #3A2900;
-}
-
-.bt-top.btn-info:hover {
-  background: var(--gam-green);
-  border-color: var(--gam-green);
-  color: var(--gam-white);
-}
-
-@media (max-width: 767px) {
-  .bt-top.btn-info {
-    background: transparent;
-    border: 0;
-    box-shadow: none;
-    width: auto;
-    height: auto;
-    padding: 8px;
-    font-size: 32px;
-    line-height: 1;
-    color: var(--gam-green);
-  }
-  .bt-top.btn-info:hover {
-    background: transparent;
-    color: var(--gam-yellow-dark);
-  }
+  display: none !important;
 }
 
 /* --------------------------------------------------------------------------
@@ -3155,6 +3150,19 @@ html body .text-success-gradiant {
   min-width: 0;
 }
 
+.gam-alcalde-kicker {
+  display: inline-block;
+  padding: 5px 12px;
+  margin-bottom: 10px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--gam-green-dark);
+  background: var(--gam-green-light);
+  border-radius: 999px;
+}
+
 .gam-alcalde-name {
   font-size: clamp(2rem, 1.55rem + 1.8vw, 2.85rem);
   font-weight: 800;
@@ -3184,16 +3192,16 @@ html body .text-success-gradiant {
 
 .gam-alcalde-meta {
   margin: 0 0 28px;
-  max-width: 48ch;
+  max-width: 65ch;
   color: var(--gam-text-muted);
-  line-height: 1.7;
+  line-height: 1.75;
   text-wrap: pretty;
 }
 
 .gam-alcalde-facts {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 14px 18px;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 16px 20px;
   margin: 0;
   padding: 22px 20px;
   background: var(--gam-white);
@@ -3239,6 +3247,227 @@ html body .text-success-gradiant {
 .gam-alcalde-fact dd a:hover,
 .gam-alcalde-fact dd a:focus {
   color: var(--gam-green);
+}
+
+.gam-alcalde-bio-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 22px;
+  margin-top: 8px;
+}
+
+.gam-alcalde-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: 24px 24px 22px;
+  background: var(--gam-white);
+  border: 1px solid var(--gam-border);
+  border-radius: 18px;
+  box-shadow: 0 10px 26px rgba(10, 40, 15, 0.05);
+  overflow: hidden;
+}
+
+.gam-alcalde-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--gam-green) 0%, var(--gam-yellow) 100%);
+}
+
+.gam-alcalde-card-head {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 18px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--gam-border);
+}
+
+.gam-alcalde-card-icon {
+  flex: 0 0 auto;
+  width: 44px;
+  height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  background: var(--gam-green-light);
+  color: var(--gam-green-dark);
+  font-size: 20px;
+}
+
+.gam-alcalde-card-eyebrow {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--gam-green-dark);
+  margin-bottom: 2px;
+}
+
+.gam-alcalde-card-title {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--gam-text);
+  line-height: 1.25;
+}
+
+.gam-alcalde-timeline {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.gam-alcalde-timeline li {
+  position: relative;
+  padding-left: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.gam-alcalde-timeline li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 7px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--gam-green);
+  box-shadow: 0 0 0 3px rgba(var(--gam-green-rgb), 0.16);
+}
+
+.gam-alcalde-timeline li strong {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--gam-text);
+}
+
+.gam-alcalde-timeline li span {
+  font-size: 13.5px;
+  color: var(--gam-text-muted);
+  line-height: 1.5;
+}
+
+.gam-alcalde-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.gam-alcalde-highlight {
+  padding: 14px 16px;
+  background: rgba(var(--gam-green-rgb), 0.06);
+  border-left: 3px solid var(--gam-green);
+  border-radius: 10px;
+}
+
+.gam-alcalde-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  margin-bottom: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--gam-white);
+  background: var(--gam-green-dark);
+  border-radius: 999px;
+}
+
+.gam-alcalde-highlight p {
+  margin: 0;
+  font-size: 14px;
+  color: var(--gam-text);
+  line-height: 1.6;
+}
+
+.gam-alcalde-subtitle {
+  margin: 4px 0 0;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--gam-text-muted);
+}
+
+.gam-alcalde-tags {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.gam-alcalde-tags li {
+  padding: 7px 12px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--gam-text);
+  background: var(--gam-bg);
+  border: 1px solid var(--gam-border);
+  border-radius: 10px;
+}
+
+.gam-alcalde-pubs {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.gam-alcalde-pubs li {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px dashed var(--gam-border);
+}
+
+.gam-alcalde-pubs li:last-child {
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.gam-alcalde-pub-year {
+  flex: 0 0 74px;
+  text-align: center;
+  padding: 4px 8px;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--gam-green-dark);
+  background: var(--gam-green-light);
+  border-radius: 8px;
+}
+
+.gam-alcalde-pubs li div {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
+.gam-alcalde-pubs li strong {
+  font-size: 14.5px;
+  font-weight: 700;
+  color: var(--gam-text);
+}
+
+.gam-alcalde-pubs li span {
+  font-size: 13px;
+  color: var(--gam-text-muted);
 }
 
 .gam-alcalde-links {
@@ -3387,6 +3616,10 @@ html body .text-success-gradiant {
     text-align: center;
   }
 
+  .gam-alcalde-fact {
+    text-align: left;
+  }
+
   .gam-alcalde-name::after {
     margin-left: auto;
     margin-right: auto;
@@ -3395,6 +3628,10 @@ html body .text-success-gradiant {
   .gam-alcalde-meta {
     margin-left: auto;
     margin-right: auto;
+  }
+
+  .gam-alcalde-bio-grid {
+    grid-template-columns: 1fr;
   }
 
   .gam-alcalde-links-row {
@@ -3418,8 +3655,17 @@ html body .text-success-gradiant {
     padding: 18px 16px;
   }
 
-  .gam-alcalde-fact {
-    text-align: left;
+  .gam-alcalde-card {
+    padding: 20px 18px;
+  }
+
+  .gam-alcalde-pubs li {
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .gam-alcalde-pub-year {
+    flex: 0 0 auto;
   }
 }
 

@@ -37,4 +37,14 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Employee::class,'employee_id');
     }
+
+    public function establecimientosSalud()
+    {
+        return $this->belongsToMany(
+            \App\Salud\SaludEstablecimiento::class,
+            'salud_usuario_establecimiento',
+            'user_id',
+            'establecimiento_id'
+        );
+    }
 }

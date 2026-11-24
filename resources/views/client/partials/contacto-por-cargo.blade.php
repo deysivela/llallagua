@@ -7,8 +7,6 @@
     }
     $etiqueta = $etiqueta ?? 'Responsable';
     $icono = $icono ?? 'icon-Administrator';
-    $mostrarTelefono = isset($mostrarTelefono) ? $mostrarTelefono : true;
-    $etiquetaTelefono = $etiquetaTelefono ?? 'Celular';
     $mostrarCargo = !empty($mostrarCargo);
 @endphp
 
@@ -29,17 +27,4 @@
             @endif
         </span>
     </li>
-    @if ($mostrarTelefono && $persona->public_phone)
-        <li>
-            <span class="gam-subalc-fact-icon" aria-hidden="true">
-                <i class="fa fa-phone"></i>
-            </span>
-            <span class="gam-subalc-fact-copy">
-                <span class="gam-side-label">{{ $etiquetaTelefono }}</span>
-                <strong>
-                    <a href="{{ $persona->tel_href }}">{{ $persona->public_phone }}</a>
-                </strong>
-            </span>
-        </li>
-    @endif
 @endforeach
