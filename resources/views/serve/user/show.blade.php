@@ -24,12 +24,21 @@
 		    <div class="clearfix"></div>
 		  </div>
 		  <div class="x_content">
+			@php
+				$employee = $user->employees;
+				$avatarUrl = ($employee && $employee->photo)
+					? asset($employee->photo)
+					: asset('server/production/images/user.png');
+			@endphp
 			<div class="card" style="width: 100%;">
-			  <img class="card-img-top center-block" src="{{ asset($user->employees['photo']) }}" alt="img" style="width: 40%;">
+			  <img class="card-img-top center-block" src="{{ $avatarUrl }}" alt="img" style="width: 40%;">
 			  <div class="card-body">
-			   <p><strong>Nombre</strong> {{ $user->employees['name'] }}</p> 
-			   <p><strong>Apellido</strong> {{ $user->employees['last_name'] }}</p> 
-			   <p><strong>Estado</strong> {{ $user->statu }}</p> 
+			   <p><strong>Usuario:</strong> {{ $user->user }}</p>
+			   <p><strong>Funcionario:</strong> {{ $employee ? trim($employee->name . ' ' . $employee->last_name) : 'Sin funcionario vinculado' }}</p>
+			   @if($employee && optional($employee->charges)->charge_employee)
+			   <p><strong>Cargo:</strong> {{ $employee->charges->charge_employee }}</p>
+			   @endif
+			   <p><strong>Estado:</strong> {{ $user->statu }}</p> 
 				<div class="clearfix"></div>
 				<div class="ln_solid"></div>
 				<div class="form-group">

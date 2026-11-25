@@ -39,6 +39,29 @@ class Employee extends Model
         return trim($this->name . ' ' . $this->last_name);
     }
 
+    /**
+     * Lista de funcionarios (id => "Nombre Apellido — Cargo") ordenada alfabéticamente,
+     * para selectores opcionales de vinculación de cuentas de usuario.
+     *
+     * @return \Illuminate\Support\Collection
+     */
+    public static function optionsFullName()
+    {
+        return static::with('charges')
+            ->orderBy('name')
+            ->orderBy('last_name')
+            ->get()
+            ->mapWithKeys(function ($employee) {
+                $label = trim($employee->name . ' ' . $employee->last_name);
+                $cargo = optional($employee->charges)->charge_employee;
+                if (!empty($cargo)) {
+                    $label .= ' — ' . $cargo;
+                }
+
+                return [$employee->id => $label];
+            });
+    }
+
     /* ------------------------------------------------------------------
        Ajuste de encuadre de la foto (solo para la credencial)
        ------------------------------------------------------------------

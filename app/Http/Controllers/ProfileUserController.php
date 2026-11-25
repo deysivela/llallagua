@@ -41,46 +41,102 @@ class ProfileUserController extends Controller
 
     public function profile()
     {
-        return view('serve.admin.profile', array('user'=> Auth::user()));
+        /** @var \App\User $user */
+        $user = Auth::user();
+        $user->load(['employees.charges', 'roles', 'establecimientosSalud']);
+        $employees = Employee::optionsFullName();
+
+        return view('serve.admin.profile', compact('user', 'employees'));
+    }
+
+    public function updates_employee(Request $request)
+    {
+        $request->validate([
+            'employee_id' => 'nullable|integer|exists:employees,id',
+        ], [
+            'employee_id.integer' => 'El funcionario seleccionado no es válido.',
+            'employee_id.exists'  => 'El funcionario seleccionado no existe en el registro.',
+        ]);
+
+        /** @var \App\User $user */
+        $user = Auth::user();
+        $employeeId = $request->filled('employee_id') ? (int) $request->input('employee_id') : null;
+
+        $user->employee_id = $employeeId;
+        $user->save();
+
+        if ($employeeId === null) {
+            return redirect()->route('profile.index')
+                ->with('success', 'Se desvinculó el funcionario de su cuenta correctamente.');
+        }
+
+        return redirect()->route('profile.index')
+            ->with('success', 'Funcionario vinculado a su cuenta correctamente.');
     }
 
 
     public function updates_avatar(Request $request)
     {
-        if ($request->hasFile('photo')) {
-            $photo =$request->file('photo');
-            $filename = time().'.'. $photo->getClientOriginalExtension();
-            Image::make($photo)->resize(300, 300)->save(public_path('server/imagenes/funcionarios/'.$filename));
+        $request->validate([
+            'photo' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ], [
+            'photo.required' => 'Seleccione una imagen para actualizar su foto.',
+            'photo.image'    => 'El archivo seleccionado debe ser una imagen válida.',
+            'photo.mimes'    => 'La imagen debe ser de tipo JPG, PNG o GIF.',
+            'photo.max'      => 'La imagen no debe superar los 2 MB.',
+        ]);
 
-            /** @var \App\User $user */
-            $user = Auth::user();
-            $user->photo=$filename;
-            $user->save();
-        }
-        return view('serve.admin.profile', array('user'=> Auth::user()));
-    }
-
-    public function updates_password(Request $request, User $user)
-    {
-        $validatedData = $request->validate([
-            'current-password' => 'required',
-            'new-password' => 'required|string|min:6|confirmed',
-            ]);
-         if (!(Hash::check($request->get('current-password'), Auth::user()->password))) {
-            // The passwords matches
-            return redirect()->back()->with("error","Su contraseña actual no coincide con la contraseña que proporcionó. Inténtalo de nuevo.");
-        }
-        if(strcmp($request->get('current-password'), $request->get('new-password')) == 0){
-            //Current password and new password are same
-            return redirect()->back()->with("error","La nueva contraseña no puede ser la misma que su contraseña actual. Por favor, elija una contraseña diferente.");
-        }
-        //Change Password
         /** @var \App\User $user */
         $user = Auth::user();
-        $user->password = bcrypt($request->get('new-password'));
-        $user->save();
 
-        return redirect()->route('profile.index')->with('success', 'Contraseña Actualizada');
+        if (!$user->employees) {
+            return redirect()->route('profile.index')
+                ->with('error', 'Esta cuenta no tiene un registro de funcionario asociado para actualizar la fotografía.');
+        }
 
+        if ($request->hasFile('photo')) {
+            $photo = $request->file('photo');
+            $filename = time() . '.' . $photo->getClientOriginalExtension();
+            $relativePath = 'server/imagenes/funcionarios/' . $filename;
+            Image::make($photo)->resize(300, 300)->save(public_path($relativePath));
+
+            $user->employees->photo = $relativePath;
+            $user->employees->save();
+        }
+
+        return redirect()->route('profile.index')->with('success', 'Fotografía de perfil actualizada correctamente.');
+    }
+
+    public function updates_password(Request $request, User $user = null)
+    {
+        $request->validate([
+            'current-password' => 'required',
+            'new-password'     => 'required|string|min:6|confirmed',
+        ], [
+            'current-password.required' => 'Debe ingresar su contraseña actual.',
+            'new-password.required'     => 'Debe ingresar una nueva contraseña.',
+            'new-password.min'          => 'La nueva contraseña debe tener al menos 6 caracteres.',
+            'new-password.confirmed'    => 'La confirmación de la nueva contraseña no coincide.',
+        ]);
+
+        /** @var \App\User $authUser */
+        $authUser = Auth::user();
+
+        if (!Hash::check($request->get('current-password'), $authUser->password)) {
+            return redirect()->route('profile.index')
+                ->withErrors(['current-password' => 'Su contraseña actual no coincide con la registrada.'])
+                ->with('error', 'Su contraseña actual no coincide con la contraseña que proporcionó. Inténtelo de nuevo.');
+        }
+
+        if (strcmp($request->get('current-password'), $request->get('new-password')) === 0) {
+            return redirect()->route('profile.index')
+                ->withErrors(['new-password' => 'La nueva contraseña no puede ser igual a la contraseña actual.'])
+                ->with('error', 'La nueva contraseña no puede ser la misma que su contraseña actual. Por favor, elija una contraseña diferente.');
+        }
+
+        $authUser->password = Hash::make($request->get('new-password'));
+        $authUser->save();
+
+        return redirect()->route('profile.index')->with('success', 'Contraseña actualizada correctamente.');
     }
 } 

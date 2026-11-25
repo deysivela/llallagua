@@ -12,7 +12,7 @@ class AdminAsociationController extends Controller
     public function editadmin( User $user)
     {
     	$roles = Role::get();
-        $employees = Employee::pluck('name','id');
+        $employees = Employee::optionsFullName();
         return view('serve.admin.asociar', compact('user','employees','roles'));
     }
 

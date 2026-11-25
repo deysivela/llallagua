@@ -36,7 +36,7 @@ class UserController extends Controller
      */
     public function create()
     {
-        $employees = Employee::pluck('name','id');
+        $employees = Employee::optionsFullName();
         return view('serve.user.create', compact('employees'));
     }
 
@@ -48,12 +48,10 @@ class UserController extends Controller
      */
     public function store(UserStoreRequest $request)
     {
-        // $employee_id = $request->get('employee_id');
-
         $user = new User();
-        $user->employee_id = $request->input('employee_id');
+        $user->employee_id = $request->filled('employee_id') ? (int) $request->input('employee_id') : null;
         $user->statu = $request->input('statu');
-        $user->user = $request->input('user');
+        $user->user = trim((string) $request->input('user'));
         $user->password = Hash::make($request->input('password'));
         $user->save();
 
@@ -79,7 +77,7 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
-        $employees = Employee::pluck('name','id');
+        $employees = Employee::optionsFullName();
         $roles = Role::get();
         return view('serve.user.edit', compact('user', 'roles','employees'));
     }
@@ -95,12 +93,12 @@ class UserController extends Controller
      */
     public function update(UserUpdateRequest $request, User $user)
     {
-        // actualizar usuario
-        // $user->update($request->all());
-        $user->employee_id = $request->get('employee_id');
+        $user->employee_id = $request->filled('employee_id') ? (int) $request->input('employee_id') : null;
         $user->statu = $request->get('statu');
-        $user->user = $request->get('user');
-        $user->password = Hash::make($request->get('password'));
+        $user->user = trim((string) $request->get('user'));
+        if ($request->filled('password')) {
+            $user->password = Hash::make($request->get('password'));
+        }
         $user->save();
 
         //actualizar roles

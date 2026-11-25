@@ -46,7 +46,9 @@ Route::get('verificar/{hash}', 'CredencialController@verify')->name('verificar')
 Auth::routes();
 Route::get('/home', 'ProfileUserController@index')->name('home');
 Route::get('profile', 'ProfileUserController@profile')->name('profile.index');
-Route::post('profile', 'ProfileUserController@updates_avatar');
+Route::post('profile', 'ProfileUserController@updates_avatar')->name('profile.avatar');
+Route::put('profile/employee', 'ProfileUserController@updates_employee')->name('profile.update.employee');
+Route::put('profile/password', 'ProfileUserController@updates_password')->name('profile.update.password');
 Route::put('profile/{user}', 'ProfileUserController@updates_password')->name('profile.update');
 // Route::resource('user', 'User\UserController');
 // Route::resource('doc', 'Document\DocumentController',['parameters'=>['doc'=>'document']]);

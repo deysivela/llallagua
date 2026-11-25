@@ -40,6 +40,8 @@
     <link href="{{ asset('server/vendors/pnotify/dist/pnotify.custom.min.css') }}" rel="stylesheet">
     <!-- Switchery -->
     <link href="{{ asset('server/vendors/switchery/dist/switchery.min.css') }}" rel="stylesheet">
+    <!-- Select2 -->
+    <link href="{{ asset('server/vendors/select2/dist/css/select2.min.css') }}" rel="stylesheet">
      <!-- Dropzone.js -->
     {{-- <link href="{{ asset('server/vendors/dropzone/dist/min/dropzone.min.css') }}" rel="stylesheet"> --}}
     <!-- Custom Theme Style -->
@@ -58,16 +60,25 @@
 
             <div class="clearfix"></div>
 
+            @php
+              $authUser = Auth::user();
+              $authEmployee = $authUser ? $authUser->employees : null;
+              $authPhoto = ($authEmployee && $authEmployee->photo)
+                ? asset($authEmployee->photo)
+                : asset('server/production/images/user.png');
+              $authDisplayName = ($authEmployee && trim($authEmployee->name . ' ' . $authEmployee->last_name) !== '')
+                ? trim($authEmployee->name . ' ' . $authEmployee->last_name)
+                : ($authUser ? $authUser->user : '');
+            @endphp
+
             <!-- menu profile quick info -->
             <div class="profile clearfix">
               <div class="profile_pic">
-                {{-- <img src="/server/build/images/user/{{Auth::user()->employees['photo']}}" alt="..." class="img-circle profile_img"> --}}
-
-                <img src="{{ asset(Auth::user()->employees['photo']) }}" alt="..." class="img-circle profile_img">
+                <img src="{{ $authPhoto }}" alt="..." class="img-circle profile_img">
               </div>
               <div class="profile_info">
                 <span>Bienvenido</span>
-                <h2>{{ Auth::user()->employees['name'] }} {{ Auth::user()->employees['last_name'] }}</h2>
+                <h2>{{ $authDisplayName }}</h2>
               </div>
             </div>
             <!-- /menu profile quick info -->
@@ -86,6 +97,7 @@
                       <li><a href="index3.html">Dashboard3</a></li>
                     </ul> --}}
                   </li>
+                  <li><a href="{{ route('profile.index') }}"><i class="fa fa-key"></i> Mi Perfil / Contraseña</a></li>
                   @can('admins.edit')
                   <li><a><i class="fa fa-user"></i> Administrador <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">
@@ -340,12 +352,12 @@
               <ul class="nav navbar-nav navbar-right">
                 <li class="">
                   <a href="javascript:;" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                    <img src="{{ asset(Auth::user()->employees['photo']) }}" alt="">{{ Auth::user()->employees['name'] }} {{ Auth::user()->employees['last_name'] }}
+                    <img src="{{ $authPhoto }}" alt="">{{ $authDisplayName }}
                     <span class=" fa fa-angle-down"></span>
                   </a>
                   <ul class="dropdown-menu dropdown-usermenu pull-right">
-                    <li><a href="{{ url('/profile') }}"><i class="fa fa-user pull-right"></i> Perfil</a></li>
-                    <li><a href=""><i class="fa fa-wrench pull-right"></i>Ajustes</a></li>
+                    <li><a href="{{ route('profile.index') }}"><i class="fa fa-user pull-right"></i> Perfil</a></li>
+                    <li><a href="{{ route('profile.index') }}"><i class="fa fa-key pull-right"></i> Cambiar Contraseña</a></li>
                     <li><a href="{{ route('logout') }}"onclick="event.preventDefault();
                     document.getElementById('logout-form').submit();">
                     <i class="fa fa-sign-out pull-right"></i> Cerrar sesión</a>
@@ -501,6 +513,9 @@
     <script src="{{ asset('server/vendors/bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js') }}"></script>
        <!-- PNotify -->
     <script src="{{ asset('server/vendors/pnotify/dist/pnotify.custom.min.js') }}"></script>
+    <!-- Select2 -->
+    <script src="{{ asset('server/vendors/select2/dist/js/select2.full.min.js') }}"></script>
+    <script src="{{ asset('server/vendors/select2/dist/js/i18n/es.js') }}"></script>
     <!-- Dropzone.js -->
     {{-- <script src="{{ asset('server/vendors/dropzone/dist/min/dropzone.min.js') }}"></script> --}}
     <!-- Custom Theme Scripts -->
@@ -522,6 +537,54 @@
             }
             $(killBrokenDatePickers);
             $(window).on('load', killBrokenDatePickers);
+
+            // Selector buscable de funcionarios (sin tildes y por múltiples palabras).
+            function normalizeSearchText(str) {
+                if (!str) {
+                    return '';
+                }
+                var s = str.toString().toLowerCase();
+                if (typeof s.normalize === 'function') {
+                    s = s.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+                }
+                return s.replace(/\s+/g, ' ').trim();
+            }
+
+            function employeeMatcher(params, data) {
+                var term = normalizeSearchText(params.term);
+                if (term === '') {
+                    return data;
+                }
+                if (typeof data.text === 'undefined') {
+                    return null;
+                }
+                var haystack = normalizeSearchText(data.text);
+                var words = term.split(' ');
+                for (var i = 0; i < words.length; i++) {
+                    if (haystack.indexOf(words[i]) === -1) {
+                        return null;
+                    }
+                }
+                return data;
+            }
+
+            $(function () {
+                if (typeof $.fn.select2 === 'undefined') {
+                    return;
+                }
+                $('select.gam-employee-select').each(function () {
+                    var $el = $(this);
+                    var placeholder = $el.data('placeholder') || '-- Sin vincular (opcional) --';
+                    $el.find('option[value=""]').text('');
+                    $el.select2({
+                        width: '100%',
+                        language: 'es',
+                        placeholder: placeholder,
+                        allowClear: true,
+                        matcher: employeeMatcher
+                    });
+                });
+            });
         })(jQuery);
     </script>
 

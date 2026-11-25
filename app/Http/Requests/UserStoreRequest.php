@@ -24,9 +24,9 @@ class UserStoreRequest extends FormRequest
     public function rules()
     {
         return [
-            'employee_id' => 'required|integer',
+            'employee_id' => 'nullable|integer|exists:employees,id',
             'statu' => 'required',
-            'user' => 'required|string',
+            'user' => 'required|string|max:191|unique:users,user',
             'password' => 'required|string|min:6|confirmed',
             'password_confirmation' => 'required|string',
         ];
@@ -35,13 +35,15 @@ class UserStoreRequest extends FormRequest
     public function messages()
     {
         return [
-            'employee_id.required' => 'Debe seleccionar un Funcionario',
-            'statu.required' => 'Elige el esdado para el nuevo Funcionario',
-            'user.required' => 'Ingrese su Usuario',
-            'password.required' => 'El campo Contraseña es obligatorio',
-            'password.min' => 'La contraseña debe contener minimo 6 caracteres',
-            'password_confirmation.required' => 'El campo confirmacion de contraseña es obligatorio',
-            // 'password_confirmation.confirmed' => 'La Confirmacion de contraseña no coincide', 
+            'employee_id.integer' => 'El funcionario seleccionado no es válido.',
+            'employee_id.exists' => 'El funcionario seleccionado no existe.',
+            'statu.required' => 'Elija el estado para el nuevo usuario.',
+            'user.required' => 'Ingrese su Usuario.',
+            'user.unique' => 'Ese nombre de usuario ya está registrado.',
+            'password.required' => 'El campo Contraseña es obligatorio.',
+            'password.min' => 'La contraseña debe contener mínimo 6 caracteres.',
+            'password.confirmed' => 'La confirmación de contraseña no coincide.',
+            'password_confirmation.required' => 'El campo confirmación de contraseña es obligatorio.',
         ];
     }
 }

@@ -38,31 +38,20 @@
           <div class="col-md-6 col-sm-6 col-xs-12">
 
   <div class="form-group">
-    {{ Form::label('employee_id','Funcionario', ['class'=>'control-label col-md-4 col-sm-4 col-xs-12']) }}
+    {{ Form::label('employee_id','Funcionario (Opcional)', ['class'=>'control-label col-md-4 col-sm-4 col-xs-12']) }}
     <div class="col-md-8 col-sm-8 col-xs-12{{ $errors->has('employee_id') ? ' has-error' : '' }}">
-    {{ Form::select('employee_id',$employees, null,['class'=>'form-control','placeholder'=>'Eliga un Funcionario','autofocus']) }}
-    <span class="help-block">{{ $errors->first('employee_id') }}</span>
+    {{ Form::select('employee_id', $employees, old('employee_id', $user->employee_id), ['id' => 'employee_id', 'class'=>'form-control gam-employee-select', 'placeholder'=>'-- Sin vincular (opcional) --', 'data-placeholder'=>'-- Sin vincular (opcional) --']) }}
+    <span class="help-block">{{ $errors->first('employee_id') ?: 'Haga clic en el selector para buscar por nombre, apellido o cargo, o presione × para desvincular.' }}</span>
     </div>
   </div>
 
-  {{-- <div class="form-group">
-    {{ Form::label('statu','Estado', ['class'=>'control-label col-md-4 col-sm-4 col-xs-12']) }}
-    <div class="col-md-8 col-sm-8 col-xs-12">
-    {{ Form::select('statu',null,['class'=>'form-control','placeholder'=>'Eligir su Estado']) }}
-    @if ($errors->has('statu'))
-            <span class="error" role="alert">
-                <strong>{{ $errors->first('statu') }}</strong>
-            </span>
-        @endif
-    </div>
-  </div> --}}
   <div class="form-group">
     <label class="control-label col-md-4 col-sm-4 col-xs-12">Estado</label>
     <div class="col-md-8 col-sm-8 col-xs-12{{ $errors->has('statu') ? ' has-error' : '' }}">
-      <select class="form-control" name="statu" autofocus="">
-        <option value="" disabled selected hidden="">Seleccione su Estado</option>
-        <option value="Activo">Activo</option>
-        <option value="Inactivo">Inactivo</option>
+      <select class="form-control" name="statu" required>
+        <option value="" disabled {{ old('statu', $user->statu) ? '' : 'selected' }} hidden>Seleccione su Estado</option>
+        <option value="Activo" {{ old('statu', $user->statu) === 'Activo' ? 'selected' : '' }}>Activo</option>
+        <option value="Inactivo" {{ old('statu', $user->statu) === 'Inactivo' ? 'selected' : '' }}>Inactivo</option>
       </select>
       <span class="help-block">{{ $errors->first('statu') }}</span>
     </div>
@@ -73,21 +62,21 @@
     <div class="form-group">
     {{ Form::label('user','Usuario', ['class'=>'control-label col-md-4 col-sm-4 col-xs-12']) }}
     <div class="col-md-8 col-sm-8 col-xs-12{{ $errors->has('user') ? ' has-error' : '' }}">
-    {{ Form::text('user',null,['class'=>'form-control','placeholder'=>'Ingrese su Nombre de Usuario','autofocus']) }}
+    {{ Form::text('user',null,['class'=>'form-control','placeholder'=>'Ingrese su Nombre de Usuario']) }}
     <span class="help-block">{{ $errors->first('user') }}</span>
     </div>
   </div>
   <div class="form-group">
-    {{ Form::label('password','Contraseña', ['class'=>'control-label col-md-4 col-sm-4 col-xs-12']) }}
+    {{ Form::label('password','Contraseña (Opcional)', ['class'=>'control-label col-md-4 col-sm-4 col-xs-12']) }}
     <div class="col-md-8 col-sm-8 col-xs-12{{ $errors->has('password') ? ' has-error' : '' }}">
-    {{ Form::input('password','password',null,['class'=>'form-control','placeholder'=>'Ingrese su contraseña','autofocus']) }}
+    {{ Form::input('password','password',null,['class'=>'form-control','placeholder'=>'Dejar vacío para mantener la actual']) }}
     <span class="help-block">{{ $errors->first('password') }}</span>
     </div>
   </div>
   <div class="form-group">
     {{ Form::label('password_confirmation','Confirmar Contraseña', ['class'=>'control-label col-md-4 col-sm-4 col-xs-12']) }}
     <div class="col-md-8 col-sm-8 col-xs-12{{ $errors->has('password_confirmation') ? ' has-error' : '' }}">
-    {{ Form::input('password','password_confirmation',null,['class'=>'form-control','placeholder'=>'Repita la Contraseña','autofocus']) }}
+    {{ Form::input('password','password_confirmation',null,['class'=>'form-control','placeholder'=>'Repita la nueva contraseña']) }}
     <span class="help-block">{{ $errors->first('password_confirmation') }}</span>
     </div>
   </div>

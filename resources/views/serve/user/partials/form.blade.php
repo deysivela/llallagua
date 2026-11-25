@@ -1,31 +1,20 @@
 <div class="col-md-6 col-sm-6 col-xs-12">
 
   <div class="form-group">
-    {{ Form::label('employee_id','Funcionario', ['class'=>'control-label col-md-4 col-sm-4 col-xs-12']) }}
+    {{ Form::label('employee_id','Funcionario (Opcional)', ['class'=>'control-label col-md-4 col-sm-4 col-xs-12']) }}
     <div class="col-md-8 col-sm-8 col-xs-12{{ $errors->has('employee_id') ? ' has-error' : '' }}">
-    {{ Form::select('employee_id',$employees, null,['class'=>'form-control','placeholder'=>'Eliga un Funcionario','autofocus']) }}
-    <span class="help-block">{{ $errors->first('employee_id') }}</span>
+    {{ Form::select('employee_id', $employees, old('employee_id'), ['id' => 'employee_id', 'class'=>'form-control gam-employee-select', 'placeholder'=>'-- Sin vincular (opcional) --', 'data-placeholder'=>'-- Sin vincular (opcional) --']) }}
+    <span class="help-block">{{ $errors->first('employee_id') ?: 'Haga clic en el selector para buscar por nombre, apellido o cargo. Puede dejarlo sin vincular.' }}</span>
     </div>
   </div>
 
-  {{-- <div class="form-group">
-    {{ Form::label('statu','Estado', ['class'=>'control-label col-md-4 col-sm-4 col-xs-12']) }}
-    <div class="col-md-8 col-sm-8 col-xs-12">
-    {{ Form::select('statu',null,['class'=>'form-control','placeholder'=>'Eligir su Estado']) }}
-    @if ($errors->has('statu'))
-            <span class="error" role="alert">
-                <strong>{{ $errors->first('statu') }}</strong>
-            </span>
-        @endif
-    </div>
-  </div> --}}
   <div class="form-group">
     <label class="control-label col-md-4 col-sm-4 col-xs-12">Estado</label>
     <div class="col-md-8 col-sm-8 col-xs-12{{ $errors->has('statu') ? ' has-error' : '' }}">
-      <select class="form-control" name="statu" autofocus="">
-        <option value="" disabled selected hidden="">Seleccione su Estado</option>
-        <option value="Activo">Activo</option>
-        <option value="Inactivo">Inactivo</option>
+      <select class="form-control" name="statu" required>
+        <option value="" disabled {{ old('statu') ? '' : 'selected' }} hidden>Seleccione su Estado</option>
+        <option value="Activo" {{ old('statu', 'Activo') === 'Activo' ? 'selected' : '' }}>Activo</option>
+        <option value="Inactivo" {{ old('statu') === 'Inactivo' ? 'selected' : '' }}>Inactivo</option>
       </select>
       <span class="help-block">{{ $errors->first('statu') }}</span>
     </div>
